@@ -1,3 +1,14 @@
+/* Variables CSS */
+:root {
+  --color-primary-dark: #121212;
+  --color-primary-accent: #038C83;
+  --color-primary-accent-hover: #026B63;
+  --color-white: #ffffff;
+  --color-grid-line: rgba(255, 255, 255, 0.1);
+  --font-lora: 'Lora', serif;
+  --font-noto: 'Noto Sans', sans-serif;
+}
+
 /* Reset CSS básico */
 * {
   margin: 0;
@@ -6,11 +17,11 @@
 }
 
 body {
-  font-family: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-noto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
 }
 
 /* Fuentes personalizadas */
@@ -24,6 +35,7 @@ body {
 
 /* Hero Section */
 .hero-section {
+  position: relative;
   min-height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
@@ -32,14 +44,25 @@ body {
   text-align: center;
   padding: 2rem;
   background-color: #000000;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-title {
-  font-family: 'Lora', serif;
+  font-family: var(--font-lora);
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .hero-description {
@@ -53,11 +76,11 @@ body {
 
 .cta-button {
   background-color: transparent;
-  border: 2px solid #038C83;
-  color: #038C83;
+  border: 2px solid var(--color-primary-accent);
+  color: var(--color-primary-accent);
   padding: 10px 30px;
   border-radius: 8px;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: var(--font-noto);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -75,6 +98,7 @@ body {
   width: 100%;
   height: 60px;
   background-color: #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .navbar-container {
@@ -88,21 +112,18 @@ body {
 .navbar-logo {
   position: absolute;
   left: 71px;
-  top: 8px;
+  top: 7px;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .logo-icon {
-  width: 58px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #038C83;
-  border-radius: 8px;
-  font-size: 1.5rem;
 }
 
 .logo-text {
@@ -181,7 +202,7 @@ body {
   background-color: #038C83;
   color: #ffffff;
 }
-
+/* Por si tengo que volver al borde inferior como elemento separado
 .navbar-border {
   position: absolute;
   bottom: 0;
@@ -190,3 +211,4 @@ body {
   height: 1px;
   background-color: rgba(255, 255, 255, 0.3);
 }
+  */

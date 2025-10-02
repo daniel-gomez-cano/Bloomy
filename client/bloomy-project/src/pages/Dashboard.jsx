@@ -4,7 +4,7 @@ import Map from '../components/Map';
 export default function Reporte() {
   const handleUbicacion = (coords) => {
     console.log('Coordenadas seleccionadas:', coords);
-    // Aquí puedes enviar coords al backend para generar el reporte
+    // desde aquí se envían coords al backend para generar el reporte
   };
 
   return (
