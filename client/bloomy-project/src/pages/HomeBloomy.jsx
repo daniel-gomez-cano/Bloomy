@@ -1,5 +1,8 @@
 import Navbar from "../components/Navbar"
 import AnimatedBackground from "../components/AnimatedBackground"
+import WhyBloomy from "../components/WhyBloomy"
+import SplitSection from "../components/SplitSection"
+import Footer from "../components/Footer"
 
 export default function HomeBloomy() {
   return (
@@ -19,6 +22,15 @@ export default function HomeBloomy() {
           <button className="cta-button">Crea tu Cuenta</button>
         </div>
       </div>
+
+      {/* Sección Why Bloomy */}
+      <WhyBloomy />
+
+      {/* Sección: Plantar en el Valle (Split) */}
+      <SplitSection />
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

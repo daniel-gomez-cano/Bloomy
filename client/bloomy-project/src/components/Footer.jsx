@@ -1,0 +1,57 @@
+import React from 'react'
+import BloomyLogo from '../assets/BloomyLogo.svg'
+import Button from './Button'
+
+export default function Footer() {
+  return (
+    <footer className="footer">
+      <div className="cta-section">
+        <h2>¿Listo para optimizar tu cosecha?</h2>
+        <p>Únete a los agricultores que ya están transformando sus cultivos con tecnología.</p>
+        <div className="cta-buttons">
+          {/* CAMBIAR URGENTE Reuse Button component for consistency */}
+          <button className="navbar-cta">Empieza Gratis</button>
+          <button className="navbar-cta">Soporte</button>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <div className="footer-container">
+          <div className="footer-column brand">
+            <img src={BloomyLogo} alt="Logo Bloomy" className="footer-logo" />
+            <h3>Bloomy</h3>
+            <p>El cultivo correcto en<br/>el lugar correcto :)</p>
+          </div>
+
+          <div className="footer-column">
+            <h4>Navegación</h4>
+            <ul>
+              <li><a href="#">Inicio</a></li>
+              <li><a href="#">Soporte</a></li>
+              <li><a href="#">Registro/Login</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h4>Stack</h4>
+            <ul>
+              <li>MongoDB</li>
+              <li>Express.js</li>
+              <li>React</li>
+              <li>Node.js</li>
+              <li>LeafletJS</li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h4>Disclaimer</h4>
+            <p>
+              Este sitio es parte de un proyecto académico.<br/>
+              No representa una empresa o servicio real.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}

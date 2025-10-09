@@ -12,7 +12,7 @@ const Button = ({
   
   const variants = {
     primary: 'bg-bloomy-primary text-white border-2 border-bloomy-primary hover:bg-bloomy-dark',
-    secondary: 'bg-white text-gray-900 hover:bg-gray-100',
+    secondary: 'bg-black text-gray-900 hover:bg-gray-100',
     outline: 'border-2 border-bloomy-primary text-bloomy-primary bg-transparent hover:bg-bloomy-primary hover:text-white'
   }
   

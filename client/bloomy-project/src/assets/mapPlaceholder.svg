@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="mapTitle">
+  <title id="mapTitle">Mapa del Valle del Cauca (placeholder)</title>
+  <rect width="100%" height="100%" fill="#0b0b0b"/>
+  <g fill="#038C83" opacity="0.15">
+    <rect x="50" y="50" width="200" height="120" rx="8"/>
+    <rect x="300" y="100" width="240" height="140" rx="12"/>
+    <circle cx="600" cy="200" r="60"/>
+  </g>
+  <text x="50%" y="90%" fill="#888" font-family="Noto Sans, sans-serif" font-size="18" text-anchor="middle">mapaValle.png no encontrado — placeholder</text>
+</svg>
