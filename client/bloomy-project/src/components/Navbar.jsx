@@ -1,7 +1,9 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import BloomyLogo from '../assets/BloomyLogo.svg' // Asegúrate de tener un logo en esta ruta
 
 const Navbar = () => {
+  const navigate = useNavigate()
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -33,7 +35,7 @@ const Navbar = () => {
           </button>
           
           {/* CTA Button */}
-          <button className="navbar-cta" onClick={() => console.log('Redirigir a registro')}>
+          <button className="navbar-cta" onClick={() => navigate('/register')}>
             Empieza Ahora
           </button>
           

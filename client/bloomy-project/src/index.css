@@ -7,6 +7,12 @@
   --color-grid-line: rgba(255, 255, 255, 0.1);
   --font-lora: 'Lora', serif;
   --font-noto: 'Noto Sans', sans-serif;
+  /* Additional theme tokens used by Register page */
+  --Corp: #038C83;
+  --Grey1: #5A5A5A; /* Input text value color */
+  --Grey2: #979797; /* Placeholder / default input border */
+  --Bord: #023436;  /* Border/decorative */
+  --Red-Error: #FF0000;
 }
 
 /* Reset CSS básico */

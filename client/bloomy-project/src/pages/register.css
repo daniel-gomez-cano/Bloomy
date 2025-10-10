@@ -1,0 +1,95 @@
+/* Register page scoped styles */
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  z-index: 1;
+}
+
+/* Decorative SVGs */
+.register-page .decorative-svg {
+  position: absolute;
+  bottom: 0;
+  height: 300px;
+  z-index: 0;
+}
+.register-page .left-svg { left: 0; bottom: -4rem; }
+.register-page .right-svg { right: 0; bottom: -4rem; }
+.register-page .decorative-svg svg { width: 264px; height: 251px; display: block; }
+
+/* Form */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.register-title {
+  font-family: var(--font-lora);
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.register-form label {
+  font-family: var(--font-noto);
+  font-size: 16px;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"] {
+  background-color: transparent;
+  border: 1px solid var(--Grey2);
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-family: var(--font-noto);
+  font-size: 16px;
+  color: var(--Grey1);
+  outline: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.register-form input[type="text"]:focus,
+.register-form input[type="email"]:focus,
+.register-form input[type="password"]:focus {
+  border-color: var(--color-primary-accent);
+  color: var(--color-white);
+}
+
+.register-form input::placeholder { color: var(--Grey2); opacity: 1; }
+
+.register-form .input-error { border-color: var(--Red-Error) !important; color: var(--color-white); }
+.register-form .error-message { color: var(--Red-Error); font-size: 14px; margin-top: -6px; }
+
+.register-submit {
+  background-color: var(--color-primary-accent);
+  color: var(--color-white);
+  font-family: var(--font-noto);
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.register-submit:hover { background-color: var(--color-primary-accent-hover); }
+
+.register-switch { text-align: center; margin-top: 8px; color: var(--color-white); }
+.register-switch a { color: var(--color-primary-accent); text-decoration: none; font-weight: 600; }
+.register-switch a:hover { color: var(--color-primary-accent-hover); }

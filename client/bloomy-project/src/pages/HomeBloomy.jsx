@@ -3,8 +3,10 @@ import AnimatedBackground from "../components/AnimatedBackground"
 import WhyBloomy from "../components/WhyBloomy"
 import SplitSection from "../components/SplitSection"
 import Footer from "../components/Footer"
+import { useNavigate } from 'react-router-dom'
 
 export default function HomeBloomy() {
+  const navigate = useNavigate()
   return (
     <div>
       <Navbar />
@@ -19,7 +21,7 @@ export default function HomeBloomy() {
             ideales para tu ubicación, utilizando datos reales de clima, suelo y 
             condiciones ambientales.
           </p>
-          <button className="cta-button">Crea tu Cuenta</button>
+          <button className="cta-button" onClick={() => navigate('/register')}>Crea tu Cuenta</button>
         </div>
       </div>
 
