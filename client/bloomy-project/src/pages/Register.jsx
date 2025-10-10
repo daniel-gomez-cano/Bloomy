@@ -1,17 +1,21 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import './register.css'
 
 export default function Register() {
   const [form, setForm] = useState({ nombre: '', correo: '', contrasena: '', contrasena2: '' })
   const [errors, setErrors] = useState({})
+  const [submitError, setSubmitError] = useState('')
+  const { register } = useAuth()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((f) => ({ ...f, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = {}
     if (!form.nombre.trim()) newErrors.nombre = 'Ingresa un nombre'
@@ -19,9 +23,13 @@ export default function Register() {
     if (!form.contrasena) newErrors.contrasena = 'Ingresa una contraseña'
     if (form.contrasena !== form.contrasena2) newErrors.contrasena2 = 'Las contraseñas no coinciden'
     setErrors(newErrors)
-    if (Object.keys(newErrors).length === 0) {
-      // TODO: Integrar con servicio/endpoint real
-      console.log('Registrando usuario', form)
+    if (Object.keys(newErrors).length > 0) return
+    try {
+      setSubmitError('')
+      await register({ nombre: form.nombre, correo: form.correo, contrasena: form.contrasena })
+      navigate('/login', { replace: true })
+    } catch (err) {
+      setSubmitError(err?.response?.data?.message || 'Error al registrar')
     }
   }
 
@@ -98,6 +106,7 @@ export default function Register() {
           />
           {errors.contrasena2 && <p className="error-message">{errors.contrasena2}</p>}
 
+          {submitError && <p className="error-message" role="alert">{submitError}</p>}
           <button type="submit" className="register-submit">Registrarse</button>
           <p className="register-switch">¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link></p>
         </form>

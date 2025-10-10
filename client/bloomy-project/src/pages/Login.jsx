@@ -1,26 +1,34 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import BloomyLogo from '../assets/BloomyLogo.svg'
 import './login.css'
 
 export default function Login() {
   const [form, setForm] = useState({ correo: '', contrasena: '' })
   const [errors, setErrors] = useState({})
+  const [submitError, setSubmitError] = useState('')
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((f) => ({ ...f, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = {}
     if (!form.correo.trim()) newErrors.correo = 'Ingresa un correo'
     if (!form.contrasena) newErrors.contrasena = 'Ingresa una contraseña'
     setErrors(newErrors)
-    if (Object.keys(newErrors).length === 0) {
-      // TODO: Integrar login real vía API
-      console.log('Ingresando usuario', form)
+    if (Object.keys(newErrors).length > 0) return
+    try {
+      setSubmitError('')
+      await login({ correo: form.correo, contrasena: form.contrasena })
+      navigate('/dashboard', { replace: true })
+    } catch (err) {
+      setSubmitError(err?.response?.data?.message || 'Error al iniciar sesión')
     }
   }
 
@@ -77,6 +85,7 @@ export default function Login() {
           />
           {errors.contrasena && <p className="error-message">{errors.contrasena}</p>}
 
+          {submitError && <p className="error-message" role="alert">{submitError}</p>}
           <button type="submit" className="login-submit">Ingresar</button>
 
           <p className="login-switch">

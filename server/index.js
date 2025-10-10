@@ -10,7 +10,15 @@ dotenv.config()
 const app = express()
 
 // Basic middleware
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173', credentials: true }))
+app.use(cors({
+	origin: (origin, cb) => {
+		const allow = [process.env.CLIENT_ORIGIN || 'http://localhost:5173']
+		// allow same-origin or no-origin (like curl/postman)
+		if (!origin || allow.includes(origin)) return cb(null, true)
+		return cb(new Error('Not allowed by CORS'))
+	},
+	credentials: true,
+}))
 app.use(express.json())
 app.use(cookieParser())
 
