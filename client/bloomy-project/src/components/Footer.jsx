@@ -26,9 +26,9 @@ export default function Footer() {
           <div className="footer-column">
             <h4>Navegación</h4>
             <ul>
-              <li><a href="#">Inicio</a></li>
-              <li><a href="#">Soporte</a></li>
-              <li><a href="#">Registro/Login</a></li>
+              <li><a href="/">Inicio</a></li>
+              <li><a href="https://wa.me/3163197861" target='_blank'>Soporte</a></li>
+              <li><a href="/register">Registrate</a></li>
             </ul>
           </div>
 

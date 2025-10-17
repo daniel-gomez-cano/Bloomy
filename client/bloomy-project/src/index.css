@@ -100,11 +100,14 @@ body {
 
 /* Navbar Styles */
 .navbar {
-  position: relative;
+  position: sticky; /* keep navbar fixed to top */
+  top: 0;
+  left: 0;
   width: 100%;
   height: 60px;
   background-color: #000000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 10050; /* ensure navbar sits above map and other layers */
 }
 
 .navbar-container {
@@ -113,6 +116,7 @@ body {
   height: 100%;
   max-width: 1280px;
   margin: 0 auto;
+  padding-left: 12px; /* small pad to avoid left edge clipping on mobile */
 }
 
 .navbar-logo {
@@ -122,6 +126,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+  z-index: 10060; /* ensure logo is above map controls */
 }
 
 .logo-icon {
@@ -148,6 +153,7 @@ body {
   display: flex;
   align-items: center;
   gap: 2rem;
+  z-index: 10060; /* ensure controls are above map */
 }
 
 .navbar-links {
@@ -208,6 +214,41 @@ body {
   background-color: #038C83;
   color: #ffffff;
 }
+
+/* Leaflet controls stacking: keep map controls above tiles but below navbar */
+.leaflet-control {
+  z-index: 10040 !important;
+}
+
+.leaflet-bottom, .leaflet-top {
+  z-index: 10040 !important;
+}
+
+/* Navbar profile dropdown (dashboard) */
+.navbar-profile { position: relative; }
+.profile-btn { background: transparent; border: none; cursor: pointer; padding: 0; }
+.profile-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary-accent); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
+.profile-menu { position: absolute; right: 0; top: 64px; background: #0b0b0b; border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px; min-width: 200px; z-index: 10070; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+.profile-name { color: var(--color-white); font-weight: 600; margin-bottom: 4px; }
+.profile-status { color: var(--color-primary-accent); font-size: 0.9rem; margin-bottom: 8px; }
+.logout-btn { width: 100%; background: transparent; color: var(--color-primary-accent); border: 1px solid var(--color-primary-accent); padding: 8px; border-radius: 6px; cursor: pointer; }
+.logout-btn:hover { background: var(--color-primary-accent); color: #fff; }
+
+/* Mobile responsive navbar */
+.mobile-toggle { display: none; background: transparent; border: none; cursor: pointer; }
+.mobile-menu { position: absolute; right: 16px; top: 64px; background: #0b0b0b; border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 8px; z-index: 10070; min-width: 200px; }
+.mobile-links { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.mobile-menu .navbar-link { color: var(--color-white); }
+
+@media (max-width: 768px) {
+  .logo-text { font-size: 20px; }
+  .navbar-logo { left: 16px; bottom: 9px ; }
+  .navbar-menu { right: 16px; gap: 0.75rem; }
+  .navbar-links { display: none; }
+  .navbar-cta { display: none; }
+  .theme-toggle { display: none; }
+  .mobile-toggle { display: block; }
+}
 /* Por si tengo que volver al borde inferior como elemento separado
 .navbar-border {
   position: absolute;
@@ -252,17 +293,23 @@ body {
   gap: 30px;
 }
 
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(3, 140, 131, 0.3);
+}
+
+
 .card {
   background-color: #000000;
   border: 1px solid var(--color-primary-accent);
   border-radius: 10px;
   padding: 30px 20px;
   text-align: center;
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-15px);
   border-color: var(--color-primary-accent-hover);
 }
 
@@ -287,7 +334,7 @@ body {
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* Split Section (Plantar en el Valle) */
+/* Split Section (¿Cómo funciona?) */
 .split-section {
   display: grid;
   grid-template-columns: 1fr;

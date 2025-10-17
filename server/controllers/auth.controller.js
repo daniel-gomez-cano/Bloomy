@@ -20,7 +20,7 @@ export async function register(req, res) {
     res
       .cookie(COOKIE_NAME, token, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: isProd ? 'none' : 'lax',
         secure: isProd,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       })
@@ -47,7 +47,7 @@ export async function login(req, res) {
     res
       .cookie(COOKIE_NAME, token, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: isProd ? 'none' : 'lax',
         secure: isProd,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
@@ -73,6 +73,6 @@ export async function me(req, res) {
 
 export async function logout(_req, res) {
   res
-    .clearCookie(COOKIE_NAME, { httpOnly: true, sameSite: 'none', secure: isProd })
+    .clearCookie(COOKIE_NAME, { httpOnly: true, sameSite: isProd ? 'none' : 'lax', secure: isProd })
     .json({ ok: true })
 }

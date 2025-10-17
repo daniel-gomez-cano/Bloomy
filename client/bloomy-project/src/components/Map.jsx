@@ -16,8 +16,9 @@ export default function Map({ onUbicacionSeleccionada }) {
   const [posicion, setPosicion] = useState(null);
 
   return (
-    <MapContainer center={[4.5, -75.7]} zoom={6} style={{ height: '400px', width: '100%' }}>
-      <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+    // style uses 100% height so the parent .map-placeholder controls sizing
+    <MapContainer center={[4.5, -75.7]} zoom={6} style={{ height: '100%', width: '100%' }}>
+      <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"/>
       <LocationMarker onSelect={(coords) => {
         setPosicion(coords);
         onUbicacionSeleccionada(coords); // pasa coords al padre

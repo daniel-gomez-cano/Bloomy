@@ -1,0 +1,325 @@
+/* === Variables CSS de la Marca === */
+:root {
+    --color-primary-dark: #121212;
+    --color-primary-accent: #038C83;
+    --color-primary-accent-hover: #026B63;
+    --color-white: #ffffff;
+    --color-grid-line: rgba(255, 255, 255, 0.1);
+    --font-lora: 'Lora', serif;
+    --font-noto: 'Noto Sans', sans-serif;
+    --Corp: #038C83;
+    --Grey1: #5A5A5A;
+    --Grey2: #979797;
+    --Bord: #023436; 
+    --Red-Error: #FF0000;
+
+    /* Colores de texto y fondo adaptados al tema oscuro */
+    --color-text-light: #e0e0e0;
+    --color-text-dark: #1a1a1a;
+    --color-bg-light: #ffffff;
+    --color-bg-dark: var(--color-primary-dark);
+    --color-card-bg: #1a1a1a;
+}
+
+/* === Estilos Base === */
+.section {
+    background-color: var(--color-bg-dark);
+    padding: 4rem 1rem;
+    margin: 0 auto;
+}
+
+/* Estilos de los fokin Beams */
+.beam {
+    position: absolute;
+    top: -200px;
+    width: 2px;
+    border-radius: 9999px;
+    background: linear-gradient(to top, var(--color-primary-accent), var(--Corp), transparent); 
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    z-index: 5;
+}
+
+.beam-1 { left: 10px; height: 56px; animation: fall-1 10s 2s infinite; }
+.beam-2 { left: min(600px, 80vw); height: 56px; animation: fall-2 6s 4s infinite; }
+.beam-3 { left: min(100px, 15vw); height: 24px; animation: fall-3 14s infinite; }
+.beam-4 { left: min(400px, 50vw); height: 56px; animation: fall-4 19s 4s infinite; }
+.beam-5 { left: min(800px, 90vw); height: 80px; animation: fall-5 13s infinite; }
+.beam-6 { left: min(1000px, 95vw); height: 48px; animation: fall-6 6s infinite; }
+.beam-7 { left: min(1200px, 98vw); height: 24px; animation: fall-7 10s 2s infinite; }
+
+@keyframes fall-1 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+@keyframes fall-2 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+@keyframes fall-3 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+@keyframes fall-4 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+@keyframes fall-5 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+@keyframes fall-6 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+@keyframes fall-7 { 0% { transform: translateY(0); opacity: 1; } 90% { opacity: 0; } 100% { transform: translateY(calc(100vh + 200px)); opacity: 0; } }
+
+/* === SECCIÓN: ¿CÓMO FUNCIONA? === */
+
+.section-header{
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.how-it-works-section {
+    position: relative;
+    padding: 5rem;
+    overflow: hidden;
+    color: var(--color-white);
+    text-align: center;
+    background: linear-gradient(-45deg, #023436, #038C83, #0d0d0d, #012b2b);
+    background-size: 400% 400%;
+    animation: gradientMove 20s ease infinite;
+}
+
+/* Animación del fondo degradado */
+@keyframes gradientMove {
+    0% { background-position: 5% 10%; }
+    16% { background-position: 20% 30%; }
+    32% { background-position: 30% 40%; }
+    48% { background-position: 40% 30%; }
+    64% { background-position: 30% 20%; }
+    100% { background-position: 15% 10%; }
+}
+
+/* Contenedor principal */
+.step-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem 6rem;
+    justify-items: center;
+    align-items: start;
+    position: relative;
+    z-index: 2;
+}
+
+/* Paso 3 centrado */
+.step:nth-child(3) {
+    grid-column: 1 / -1;
+    justify-self: center;
+}
+
+/* === ESTILOS DE CADA PASO === */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    gap: 1rem;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+}
+
+/* Hover del paso */
+.step:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(3, 140, 131, 0.3);
+}
+
+/* Contenedor del número y del icono */
+.step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Círculo del número */
+.step-number {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--color-primary-accent);
+    color: var(--color-white);
+    font-size: 1.8rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--Bord);
+    box-shadow: 0 0 15px rgba(3, 140, 131, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover del círculo */
+.step:hover .step-number {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(3, 140, 131, 0.8);
+}
+
+/* Ícono */
+.step-icon-svg {
+    fill: var(--color-primary-accent);
+    width: 35px;
+    height: 35px;
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+/* Hover del ícono */
+.step:hover .step-icon-svg {
+    transform: rotate(10deg) scale(1.15);
+    filter: drop-shadow(0 0 8px var(--color-primary-accent));
+}
+
+/* Contenido del paso */
+.step-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.step-description-title {
+    font-weight: bold;
+    color: var(--color-primary-accent);
+    margin-bottom: 0.25rem;
+}
+
+.step-title {
+    font-size: 1.5rem;
+    font-family: var(--font-lora);
+    color: var(--color-white);
+    margin-bottom: 0.75rem;
+}
+
+/* Lista centrada */
+.step-content ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.step-content li {
+    color: var(--color-text-light);
+    margin-bottom: 0.5rem;
+}
+
+.step-content li::before {
+    content: '• ';
+    color: var(--color-primary-accent);
+    font-weight: bold;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .step-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === 4. Sección Premium (Nueva) === */
+.premium-section {
+    background-color: var(--color-primary-dark);
+    max-width: 1200px;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 2rem;
+    font-size: 1rem;
+}
+
+.comparison-table th, .comparison-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--Bord);
+}
+
+.comparison-table thead th {
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #0a0a0a;
+    color: var(--color-white);
+    position: sticky;
+    top: 0;
+}
+
+/* Estilos de la primera columna (Característica) */
+.comparison-table th:first-child, .comparison-table td:first-child {
+    text-align: left;
+    font-weight: normal;
+    background-color: #1a1a1a;
+    color: var(--color-white);
+    border-right: 1px solid var(--Bord);
+}
+
+/* Estilos de la columna Premium para destacarla */
+.comparison-table th:last-child, .comparison-table td:last-child {
+    background-color: rgba(3, 140, 131, 0.1);
+    font-weight: bold;
+    color: var(--color-white);
+    border-left: 1px solid var(--Bord);
+}
+
+.check-icon {
+    color: var(--color-primary-accent);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.cross-icon {
+    color: var(--Grey1);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Responsividad de la tabla (apilado forzado en móvil) */
+@media (max-width: 700px) {
+    .comparison-table {
+        display: block;
+        width: 100%;
+    }
+
+    .comparison-table thead {
+        display: none; /* Oculta encabezados en móvil */
+    }
+
+    .comparison-table tbody, .comparison-table tr {
+        display: block;
+    }
+
+    .comparison-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--Bord);
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .comparison-table td {
+        display: block;
+        text-align: right;
+        padding: 0.75rem 1rem;
+        border: none;
+        position: relative;
+    }
+    
+    .comparison-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        font-weight: bold;
+        color: var(--color-primary-accent);
+    }
+
+    .comparison-table td:first-child:before {
+        content: "";
+    }
+    
+    .comparison-table td:first-child {
+        text-align: left;
+        background-color: var(--color-card-bg);
+        font-weight: bold;
+    }
+        .comparison-table td:last-child {
+        background-color: rgba(3, 140, 131, 0.05);
+    }
+}

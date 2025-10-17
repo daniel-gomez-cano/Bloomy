@@ -1,9 +1,46 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import BloomyLogo from '../assets/BloomyLogo.svg' // Asegúrate de tener un logo en esta ruta
+import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import BloomyLogo from '../assets/BloomyLogo.svg'
+import { useAuth } from '../hooks/useAuth'
 
 const Navbar = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { user, logout } = useAuth()
+  const [open, setOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const menuRef = useRef(null)
+  const mobileRef = useRef(null)
+
+  const isDashboard = location.pathname.startsWith('/dashboard')
+
+  const handleLogout = async () => {
+    await logout()
+    setOpen(false)
+    setMobileOpen(false)
+    navigate('/', { replace: true })
+  }
+
+  // Close dropdown on click outside or on Escape
+  useEffect(() => {
+    function onDocClick(e) {
+      if (open && menuRef.current && !menuRef.current.contains(e.target)) setOpen(false)
+      if (mobileOpen && mobileRef.current && !mobileRef.current.contains(e.target) && !e.target.closest('.mobile-toggle')) setMobileOpen(false)
+    }
+    function onEsc(e) {
+      if (e.key === 'Escape') {
+        setOpen(false)
+        setMobileOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onDocClick)
+    document.addEventListener('keydown', onEsc)
+    return () => {
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('keydown', onEsc)
+    }
+  }, [open, mobileOpen])
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -15,13 +52,13 @@ const Navbar = () => {
         </div>
         
         {/* Navigation Items */}
-        <div className="navbar-menu">
+      <div className="navbar-menu">
           
           <div className="navbar-links">
-            <a href="#consejos" className="navbar-link">
-              Consejos
+            <a href="#" className="navbar-link">
+              ¿Cómo funciona?
             </a>
-            <a href="#soporte" className="navbar-link">
+            <a href="https://wa.me/3163197861" className="navbar-link" target='_blank'>
               Soporte
             </a>
           </div>
@@ -34,10 +71,51 @@ const Navbar = () => {
             </svg>
           </button>
           
-          {/* CTA Button */}
-          <button className="navbar-cta" onClick={() => navigate('/register')}>
-            Empieza Ahora
+          {/* CTA Button or Profile */}
+          {isDashboard ? (
+            <div className="navbar-profile" ref={menuRef}>
+              <button className="profile-btn" onClick={() => setOpen((v) => !v)} aria-haspopup="true" aria-expanded={open} aria-label="Perfil">
+                {/* simple circle icon */}
+                <div className="profile-icon">{user?.nombre ? user.nombre.charAt(0).toUpperCase() : 'U'}</div>
+              </button>
+              {open && (
+                <div className="profile-menu" role="menu">
+                  <div className="profile-name">{user?.nombre || user?.correo}</div>
+                  <div className="profile-status">{user?.isPremium ? 'Premium' : 'No Premium'}</div>
+                  <button className="logout-btn" onClick={handleLogout}>Cerrar sesión</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <button className="navbar-cta" onClick={() => navigate('/dashboard')}>
+                Empieza Ahora
+              </button>
+            </>
+          )}
+          {/* Mobile toggle */}
+          <button className="mobile-toggle" aria-label="Abrir menú" onClick={() => setMobileOpen(v => !v)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 6h18M3 12h18M3 18h18" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
+          {mobileOpen && (
+            <div className="mobile-menu" ref={mobileRef}>
+              <div className="mobile-links">
+                <a href="#consejos" className="navbar-link">¿Cómo funciona?</a>
+                <a href="https://wa.me/3163197861" className="navbar-link">Soporte</a>
+              </div>
+              {isDashboard ? (
+                <div className="mobile-profile">
+                  <div className="profile-name">{user?.nombre || user?.correo}</div>
+                  <div className="profile-status">{user?.isPremium ? 'Premium' : 'No Premium'}</div>
+                  <button className="logout-btn" onClick={handleLogout}>Cerrar sesión</button>
+                </div>
+              ) : (
+                <button className="navbar-cta" onClick={() => { setMobileOpen(false); navigate('/register') }}>Empieza Ahora</button>
+              )}
+            </div>
+          )}
           
         </div>
         
