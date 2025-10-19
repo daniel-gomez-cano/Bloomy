@@ -15,6 +15,17 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false))
   }, [])
 
+  const refresh = async () => {
+    try {
+      const u = await fetchMe()
+      setUser(u)
+      return u
+    } catch (err) {
+      setUser(null)
+      return null
+    }
+  }
+
   const login = async (payload) => {
     setError(null)
     const u = await loginUser(payload)
@@ -34,7 +45,7 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
-  const value = useMemo(() => ({ user, loading, error, login, register, logout }), [user, loading, error])
+  const value = useMemo(() => ({ user, loading, error, login, register, logout, refresh }), [user, loading, error])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

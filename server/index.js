@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import { connectDB } from './config/db.js'
 import authRoutes from './routes/auth.routes.js'
+import stripeRoutes from './routes/stripe.routes.js'
+import { stripeWebhookHandler } from './controllers/stripe.controller.js'
 
 dotenv.config()
 
@@ -19,11 +21,15 @@ app.use(cors({
 	},
 	credentials: true,
 }))
+// Webhook must be before express.json to keep raw body for signature verification
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler)
+
 app.use(express.json())
 app.use(cookieParser())
 
 // Routes
 app.use('/api/auth', authRoutes)
+app.use('/api/stripe', stripeRoutes)
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }))

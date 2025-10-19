@@ -3,9 +3,14 @@ import Navbar from '../components/Navbar'
 import Map from '../components/Map'
 import { useAuth } from '../hooks/useAuth'
 import './dashboard.css'
+import { createCheckoutSession } from '../services/stripe'
+import { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 export default function Dashboard() {
   const { user } = useAuth()
+  const { refresh } = useAuth()
+  const [searchParams] = useSearchParams()
   const [coords, setCoords] = useState(null)
   const [dimensions, setDimensions] = useState('')
   const [shape, setShape] = useState('Irregular')
@@ -13,6 +18,18 @@ export default function Dashboard() {
   const handleUbicacionSeleccionada = (latlng) => {
     setCoords(latlng)
   }
+
+  // If we come back from Checkout with a session_id, refresh user
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id')
+    if (sessionId) {
+      try {
+        refresh()
+      } catch (err) {
+        console.error('Failed to refresh user after checkout', err)
+      }
+    }
+  }, [searchParams])
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -48,26 +65,52 @@ export default function Dashboard() {
             {/* Integración del Map aquí */}
             <Map onUbicacionSeleccionada={handleUbicacionSeleccionada} />
           </div>
-
-          <div className="input-group">
-            <div className="field">
-              <label htmlFor="dimensions">Dimensiones del terreno (m²)</label>
-              <input value={dimensions} onChange={(e)=>setDimensions(e.target.value)} type="text" id="dimensions" placeholder="Ej: 20x20 ?" />
+          {/* Non-premium: solo mostrar 'Mejorar a Premium' y 'Generar Reporte' */}
+          {!user?.isPremium ? (
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button
+                className="btn-accent"
+                onClick={async () => {
+                  try {
+                    const data = await createCheckoutSession()
+                    if (data?.url) {
+                      window.location.href = data.url
+                    } else {
+                      console.error('No session URL returned')
+                    }
+                  } catch (err) {
+                    console.error('Checkout error', err)
+                  }
+                }}
+              >
+                Mejorar a Premium
+              </button>
+              <button className="btn-outline">Generar Reporte</button>
             </div>
-            <button className="btn-accent">Generar Reporte</button>
-          </div>
+          ) : (
+            <>
+              {/* Premium: mantiene los campos e inputs actuales */}
+              <div className="input-group">
+                <div className="field">
+                  <label htmlFor="dimensions">Dimensiones del terreno (m²)</label>
+                  <input value={dimensions} onChange={(e)=>setDimensions(e.target.value)} type="text" id="dimensions" placeholder="Ej: 20x20 ?" />
+                </div>
+                <button className="btn-accent">Generar Reporte</button>
+              </div>
 
-          <div className="input-group">
-            <div className="field">
-              <label htmlFor="shape">Disposición del terreno</label>
-              <select value={shape} onChange={(e)=>setShape(e.target.value)} id="shape">
-                <option>Irregular</option>
-                <option>Cuadrado</option>
-                <option>Triangular</option>
-              </select>
-            </div>
-            <button className="btn-outline">Descargar PDF</button>
-          </div>
+              <div className="input-group">
+                <div className="field">
+                  <label htmlFor="shape">Disposición del terreno</label>
+                  <select value={shape} onChange={(e)=>setShape(e.target.value)} id="shape">
+                    <option>Irregular</option>
+                    <option>Cuadrado</option>
+                    <option>Triangular</option>
+                  </select>
+                </div>
+                <button className="btn-outline">Descargar PDF</button>
+              </div>
+            </>
+          )}
         </section>
       </main>
     </div>

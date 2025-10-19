@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BloomyLogo from '../assets/BloomyLogo.svg'
 import { useAuth } from '../hooks/useAuth'
+import { createCheckoutSession } from '../services/stripe'
 
 const Navbar = () => {
   const navigate = useNavigate()
@@ -13,6 +14,11 @@ const Navbar = () => {
   const mobileRef = useRef(null)
 
   const isDashboard = location.pathname.startsWith('/dashboard')
+
+  // Nav label and href differ between home and dashboard
+  const navLink = isDashboard
+    ? { label: 'Consejos', href: '/consejos' }
+    : { label: '\u00bfC\u00f3mo funciona?', href: '#como-funciona' }
 
   const handleLogout = async () => {
     await logout()
@@ -55,12 +61,27 @@ const Navbar = () => {
       <div className="navbar-menu">
           
           <div className="navbar-links">
-            <a href="#" className="navbar-link">
-              ¿Cómo funciona?
-            </a>
-            <a href="https://wa.me/3163197861" className="navbar-link" target='_blank'>
-              Soporte
-            </a>
+              <a
+                href={navLink.href}
+                className="navbar-link"
+                onClick={(e) => {
+                  // If on Home, smooth-scroll to the split section; if on Dashboard, navigate to /consejos
+                  if (!isDashboard) {
+                    e.preventDefault()
+                    const el = document.getElementById('como-funciona')
+                    if (el) el.scrollIntoView({ behavior: 'smooth' })
+                    else window.location.hash = 'como-funciona'
+                  } else {
+                    e.preventDefault()
+                    navigate(navLink.href)
+                  }
+                }}
+              >
+                {navLink.label}
+              </a>
+              <a href="https://wa.me/3163197861" className="navbar-link" target='_blank' rel="noreferrer">
+                Soporte
+              </a>
           </div>
           
           {/* Theme Toggle */}
@@ -82,6 +103,23 @@ const Navbar = () => {
                 <div className="profile-menu" role="menu">
                   <div className="profile-name">{user?.nombre || user?.correo}</div>
                   <div className="profile-status">{user?.isPremium ? 'Premium' : 'No Premium'}</div>
+                  {!user?.isPremium && (
+                    <button
+                      className="logout-btn" // reutilizo estilos de botón para enlace
+                      style={{ marginBottom: 8 }}
+                      onClick={async () => {
+                        try {
+                          const data = await createCheckoutSession()
+                          setOpen(false)
+                          if (data?.url) window.location.href = data.url
+                        } catch (e) {
+                          console.error('Checkout error', e)
+                        }
+                      }}
+                    >
+                      Mejorar a Premium
+                    </button>
+                  )}
                   <button className="logout-btn" onClick={handleLogout}>Cerrar sesión</button>
                 </div>
               )}
@@ -102,7 +140,24 @@ const Navbar = () => {
           {mobileOpen && (
             <div className="mobile-menu" ref={mobileRef}>
               <div className="mobile-links">
-                <a href="#consejos" className="navbar-link">¿Cómo funciona?</a>
+                <a
+                  href={navLink.href}
+                  className="navbar-link"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (!isDashboard) {
+                      const el = document.getElementById('como-funciona')
+                      if (el) el.scrollIntoView({ behavior: 'smooth' })
+                      else window.location.hash = 'como-funciona'
+                      setMobileOpen(false)
+                    } else {
+                      setMobileOpen(false)
+                      navigate('/consejos')
+                    }
+                  }}
+                >
+                  {navLink.label}
+                </a>
                 <a href="https://wa.me/3163197861" className="navbar-link">Soporte</a>
               </div>
               {isDashboard ? (
