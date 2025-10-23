@@ -169,6 +169,11 @@ body {
   color: #ffffff;
   text-decoration: none;
   transition: color 0.2s ease;
+  /* Normalize appearance when used on <button> too */
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .navbar-link:hover {

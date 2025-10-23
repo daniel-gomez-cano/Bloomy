@@ -5,6 +5,8 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
+import Consejos from './pages/Consejos'
+import PremiumRoute from './components/PremiumRoute'
 
 function App() {
   return (
@@ -19,6 +21,14 @@ function App() {
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/consejos"
+        element={
+          <PremiumRoute>
+            <Consejos />
+          </PremiumRoute>
         }
       />
     </Routes>
