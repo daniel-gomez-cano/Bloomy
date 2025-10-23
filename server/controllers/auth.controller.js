@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { User } from '../models/User.js'
+import { EmailVerification } from '../models/EmailVerification.js'
 import { signAccessToken, verifyToken } from '../services/jwt.js'
 
 const COOKIE_NAME = 'bloomy_token'
@@ -13,8 +14,17 @@ export async function register(req, res) {
     const existing = await User.findOne({ correo })
     if (existing) return res.status(409).json({ message: 'El correo ya está registrado' })
 
+    // Require verified email before registration
+    const ver = await EmailVerification.findOne({ email: String(correo).toLowerCase().trim() })
+    if (!ver || !ver.verified || ver.expiresAt < new Date()) {
+      return res.status(400).json({ message: 'Debes verificar tu correo antes de registrarte' })
+    }
+
     const passwordHash = await bcrypt.hash(contrasena, 10)
     const user = await User.create({ nombre, correo, passwordHash })
+
+    // Cleanup verification record after successful registration
+    try { await EmailVerification.deleteOne({ email: String(correo).toLowerCase().trim() }) } catch {}
 
     const token = signAccessToken({ sub: user._id, correo: user.correo })
     res

@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import './register.css'
+import { requestEmailVerification, verifyEmailVerification } from '../services/auth'
 
 export default function Register() {
   const [form, setForm] = useState({ nombre: '', correo: '', contrasena: '', contrasena2: '' })
   const [errors, setErrors] = useState({})
   const [submitError, setSubmitError] = useState('')
+  const [emailStatus, setEmailStatus] = useState({ sent: false, verified: false, loading: false, message: '' })
   const { register } = useAuth()
   const navigate = useNavigate()
 
@@ -22,6 +24,7 @@ export default function Register() {
     if (!form.correo.trim()) newErrors.correo = 'Ingresa un correo'
     if (!form.contrasena) newErrors.contrasena = 'Ingresa una contraseña'
     if (form.contrasena !== form.contrasena2) newErrors.contrasena2 = 'Las contraseñas no coinciden'
+    if (!emailStatus.verified) newErrors.correo = newErrors.correo || 'Verifica tu correo antes de registrarte'
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
     try {
@@ -30,6 +33,35 @@ export default function Register() {
       navigate('/login', { replace: true })
     } catch (err) {
       setSubmitError(err?.response?.data?.message || 'Error al registrar')
+    }
+  }
+
+  const sendCode = async () => {
+    if (!form.correo.trim()) {
+      setErrors((e) => ({ ...e, correo: 'Ingresa un correo' }))
+      return
+    }
+    setEmailStatus({ sent: false, verified: false, loading: true, message: '' })
+    try {
+      await requestEmailVerification(form.correo)
+      setEmailStatus({ sent: true, verified: false, loading: false, message: 'Código enviado. Revisa tu correo.' })
+    } catch (err) {
+      setEmailStatus({ sent: false, verified: false, loading: false, message: err?.response?.data?.message || 'No se pudo enviar el código' })
+    }
+  }
+
+  const verifyCode = async () => {
+    const code = form.codigo?.trim()
+    if (!code) {
+      setErrors((e) => ({ ...e, codigo: 'Ingresa el código' }))
+      return
+    }
+    setEmailStatus((s) => ({ ...s, loading: true, message: '' }))
+    try {
+      await verifyEmailVerification(form.correo, code)
+      setEmailStatus({ sent: true, verified: true, loading: false, message: 'Correo verificado ✅' })
+    } catch (err) {
+      setEmailStatus({ sent: true, verified: false, loading: false, message: err?.response?.data?.message || 'Código inválido' })
     }
   }
 
@@ -71,16 +103,42 @@ export default function Register() {
           {errors.nombre && <p className="error-message">{errors.nombre}</p>}
 
           <label htmlFor="correo">Ingrese correo</label>
-          <input
-            type="email"
-            id="correo"
-            name="correo"
-            placeholder="ejemplo@correo.com"
-            value={form.correo}
-            onChange={handleChange}
-            className={errors.correo ? 'input-error' : ''}
-          />
+          <div className="inline-row">
+            <input
+              type="email"
+              id="correo"
+              name="correo"
+              placeholder="ejemplo@correo.com"
+              value={form.correo}
+              onChange={handleChange}
+              className={errors.correo ? 'input-error' : ''}
+              disabled={emailStatus.verified}
+            />
+            <button type="button" className="verify-btn" onClick={sendCode} disabled={emailStatus.loading || emailStatus.verified}>
+              {emailStatus.loading ? 'Enviando…' : emailStatus.sent ? 'Reenviar' : 'Verificar correo'}
+            </button>
+          </div>
           {errors.correo && <p className="error-message">{errors.correo}</p>}
+          {emailStatus.message && <p className="status-message">{emailStatus.message}</p>}
+
+          {emailStatus.sent && !emailStatus.verified && (
+            <>
+              <label htmlFor="codigo">Código de verificación</label>
+              <div className="inline-row">
+                <input
+                  type="text"
+                  id="codigo"
+                  name="codigo"
+                  placeholder="Ingresa el código"
+                  value={form.codigo || ''}
+                  onChange={handleChange}
+                  className={errors.codigo ? 'input-error' : ''}
+                />
+                <button type="button" className="verify-btn" onClick={verifyCode} disabled={emailStatus.loading}>Verificar</button>
+              </div>
+              {errors.codigo && <p className="error-message">{errors.codigo}</p>}
+            </>
+          )}
 
           <label htmlFor="contrasena">Ingrese contraseña</label>
           <input

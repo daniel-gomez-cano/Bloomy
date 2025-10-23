@@ -93,3 +93,26 @@
 .register-switch { text-align: center; margin-top: 8px; color: var(--color-white); }
 .register-switch a { color: var(--color-primary-accent); text-decoration: none; font-weight: 600; }
 .register-switch a:hover { color: var(--color-primary-accent-hover); }
+
+/* Inline row for email/code + action button */
+.inline-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.verify-btn {
+  background-color: transparent;
+  color: var(--color-primary-accent);
+  border: 1px solid var(--color-primary-accent);
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-noto);
+  font-weight: 600;
+}
+.verify-btn:hover { background-color: var(--color-primary-accent); color: #fff; }
+.verify-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.status-message { color: rgba(255,255,255,0.85); font-size: 14px; margin-top: -6px; }
