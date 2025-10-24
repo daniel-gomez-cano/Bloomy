@@ -9,8 +9,17 @@ trigger:
 pool:
   name: Default
 
+resources:
+  repositories:
+    - repository: self
+      type: github
+      name: daniel-gomez-cano/Bloomy
+      ref: main
+      endpoint: GitHubConnection
+
 steps:
 - checkout: self
+
 - task: NodeTool@0
   inputs:
     versionSpec: '20.x'
