@@ -11,14 +11,14 @@ pool:
 
 resources:
   repositories:
-    - repository: self
+    - repository: bloomygit
       type: github
       name: daniel-gomez-cano/Bloomy
       ref: main
       endpoint: GitHubConnection
 
 steps:
-- checkout: self
+- checkout: bloomygit
 
 - task: NodeTool@0
   inputs:
