@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import Consejos from './pages/Consejos'
 import PremiumRoute from './components/PremiumRoute'
+import ForgotPassword from './pages/ForgotPassword'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+  <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
       <Route
         path="/dashboard"
         element={

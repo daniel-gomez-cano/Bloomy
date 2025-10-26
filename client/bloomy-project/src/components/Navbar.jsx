@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import BloomyLogo from '../assets/BloomyLogo.svg'
 import { useAuth } from '../hooks/useAuth'
 import { createCheckoutSession } from '../services/stripe'
+import { changePassword as changePasswordApi } from '../services/auth'
 import ThemeToggle from './ThemeToggle'
 
 const Navbar = () => {
@@ -13,6 +14,12 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const menuRef = useRef(null)
   const mobileRef = useRef(null)
+  const [pwOpen, setPwOpen] = useState(false)
+  const [pw1, setPw1] = useState('')
+  const [pw2, setPw2] = useState('')
+  const [pwError, setPwError] = useState('')
+  const [pwOk, setPwOk] = useState('')
+  const [pwLoading, setPwLoading] = useState(false)
 
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isHome = location.pathname === '/' || location.pathname === ''
@@ -44,6 +51,23 @@ const Navbar = () => {
       document.removeEventListener('keydown', onEsc)
     }
   }, [open, mobileOpen])
+
+  const submitPwChange = async () => {
+    try {
+      setPwError(''); setPwOk('')
+      if (!pw1 || pw1.length < 6) { setPwError('La contraseña debe tener al menos 6 caracteres'); return }
+      if (pw1 !== pw2) { setPwError('Las contraseñas no coinciden'); return }
+      setPwLoading(true)
+      await changePasswordApi(pw1)
+      setPwLoading(false)
+      setPwOk('Contraseña actualizada ✅')
+      setPw1(''); setPw2('')
+      setTimeout(() => setPwOpen(false), 1200)
+    } catch (err) {
+      setPwLoading(false)
+      setPwError(err?.response?.data?.message || 'No se pudo cambiar la contraseña')
+    }
+  }
 
   return (
     <nav className="navbar">
@@ -97,7 +121,7 @@ const Navbar = () => {
           {/* CTA or profile depending on route */}
           {isHome && (
             <button className="navbar-cta" onClick={() => navigate('/dashboard')}>
-              Dashboard
+              Entrar
             </button>
           )}
 
@@ -127,6 +151,37 @@ const Navbar = () => {
                     >
                       Mejorar a Premium
                     </button>
+                  )}
+                  <button
+                    className="logout-btn"
+                    style={{ marginBottom: 8 }}
+                    onClick={() => {
+                      setPwOpen((v) => !v)
+                      setPw1(''); setPw2(''); setPwError(''); setPwOk('')
+                    }}
+                  >
+                    Cambiar contraseña
+                  </button>
+
+                  {pwOpen && (
+                    <div className="profile-change">
+                      <input
+                        type="password"
+                        placeholder="Nueva contraseña"
+                        value={pw1}
+                        onChange={(e)=>{ setPw1(e.target.value); setPwError(''); setPwOk('') }}
+                        onKeyDown={async(e)=>{ if(e.key==='Enter'){ e.preventDefault(); await submitPwChange() } }}
+                      />
+                      <input
+                        type="password"
+                        placeholder="Confirmar contraseña"
+                        value={pw2}
+                        onChange={(e)=>{ setPw2(e.target.value); setPwError(''); setPwOk('') }}
+                        onKeyDown={async(e)=>{ if(e.key==='Enter'){ e.preventDefault(); await submitPwChange() } }}
+                      />
+                      {pwError && <div className="profile-msg error">{pwError}</div>}
+                      {pwOk && <div className="profile-msg ok">{pwOk}</div>}
+                    </div>
                   )}
                   <button className="logout-btn" onClick={handleLogout}>Cerrar sesión</button>
                 </div>

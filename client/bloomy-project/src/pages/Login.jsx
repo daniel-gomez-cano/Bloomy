@@ -91,6 +91,9 @@ export default function Login() {
           <p className="login-switch">
             ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
           </p>
+          <p className="login-switch" style={{ marginTop: 6 }}>
+            <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
+          </p>
         </form>
       </div>
     </div>

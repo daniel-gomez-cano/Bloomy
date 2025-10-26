@@ -249,6 +249,14 @@ body {
 .mobile-links { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .mobile-menu .navbar-link { color: var(--color-white); }
 
+/* Change password form inside profile menu */
+.profile-change { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.profile-change input { background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #fff; outline: none; }
+.profile-change input:focus { border-color: var(--color-primary-accent); }
+.profile-msg { font-size: 0.9rem; }
+.profile-msg.error { color: #ff6b6b; }
+.profile-msg.ok { color: #2ecc71; }
+
 @media (max-width: 768px) {
   .logo-text { font-size: 20px; }
   .navbar-logo { left: 16px; bottom: 9px ; }

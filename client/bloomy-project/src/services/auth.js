@@ -37,3 +37,24 @@ export async function verifyEmailVerification(correo, codigo) {
   const res = await api.post('/api/auth/email/verify-code', { correo, codigo })
   return res.data
 }
+
+export async function changePassword(contrasena) {
+  const res = await api.post('/api/auth/change-password', { contrasena })
+  return res.data
+}
+
+// Forgot password
+export async function requestPasswordReset(correo) {
+  const res = await api.post('/api/auth/password/request', { correo })
+  return res.data
+}
+
+export async function verifyPasswordReset(correo, codigo) {
+  const res = await api.post('/api/auth/password/verify', { correo, codigo })
+  return res.data
+}
+
+export async function resetPassword(correo, codigo, contrasena) {
+  const res = await api.post('/api/auth/password/reset', { correo, codigo, contrasena })
+  return res.data
+}

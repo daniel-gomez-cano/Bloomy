@@ -86,3 +86,26 @@ export async function logout(_req, res) {
     .clearCookie(COOKIE_NAME, { httpOnly: true, sameSite: isProd ? 'none' : 'lax', secure: isProd })
     .json({ ok: true })
 }
+
+export async function changePassword(req, res) {
+  try {
+    const token = req.cookies?.[COOKIE_NAME]
+    if (!token) return res.status(401).json({ message: 'No autenticado' })
+    const payload = verifyToken(token)
+    const user = await User.findById(payload.sub)
+    if (!user) return res.status(401).json({ message: 'No autenticado' })
+
+    const { contrasena } = req.body
+    if (!contrasena || typeof contrasena !== 'string' || contrasena.length < 6) {
+      return res.status(400).json({ message: 'La nueva contraseña es inválida (mínimo 6 caracteres)' })
+    }
+
+    const passwordHash = await bcrypt.hash(contrasena, 10)
+    user.passwordHash = passwordHash
+    await user.save()
+    return res.json({ ok: true })
+  } catch (err) {
+    console.error('changePassword error', err)
+    return res.status(500).json({ message: 'No se pudo cambiar la contraseña' })
+  }
+}
