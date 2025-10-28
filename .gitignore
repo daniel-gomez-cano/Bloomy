@@ -1,5 +1,6 @@
 # Archivos de entorno
 .env
+.env.example
 server/.env
 client/.env
 .env.local

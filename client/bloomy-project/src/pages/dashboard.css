@@ -9,18 +9,19 @@
 }
 
 /* -------- DASHBOARD LAYOUT -------- */
-.dashboard {
+ .dashboard {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  min-height: calc(100vh - 60px); /* Use full viewport but leave room for sticky navbar */
-}
+  height: calc(100vh - 60px); /* lock layout to viewport minus navbar so right panel stays fixed */
+ }
 
 /* -------- LEFT: IA REPORT SECTION -------- */
 .ia-report-section {
-    background-color: #000;
-  padding: 2rem;
-  overflow-y: auto;
+  background-color: #000;
+  padding: 4rem 2rem 2rem; /* pequeño offset top para no chocar con navbar sticky */
+  overflow-y: auto; /* own scroll for report */
   border-right: 1px solid var(--color-grid-line);
+  height: 100%; /* fill the dashboard height so body doesn't scroll */
 }
 
 .ia-report-section h2 {
@@ -46,6 +47,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 1rem;
+  height: 100%; /* keep map column fixed height matching viewport */
 }
 
 .map-placeholder {
@@ -124,6 +126,28 @@
   background-color: var(--color-white);
   color: var(--color-primary-dark);
 }
+
+/* Markdown styling (basic) */
+.markdown-body h2 { font-family: var(--font-lora); font-size: 1.5rem; margin: 1rem 0 1rem; }
+.markdown-body h3 { font-family: var(--font-lora); font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+.markdown-body p { margin: 1rem 0; color: rgba(255,255,255,0.85); }
+.markdown-body ul, .markdown-body ol { padding-left: 1.25rem; margin: 0.5rem 0; }
+.markdown-body table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--color-grid-line); padding: 8px; }
+.markdown-body th { background: rgba(255,255,255,0.06); }
+
+/* Loading UI */
+.loading-wrap { display: flex; align-items: center; gap: 14px; }
+.spinner {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: var(--color-primary-accent);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.didyouknow { margin-top: 8px; color: rgba(255,255,255,0.85); font-size: 0.95rem; }
+.didyouknow .label { color: var(--color-primary-accent); font-weight: 700; margin-right: 6px; }
 
 /* Scrollbar personalizado */
 .ia-report-section::-webkit-scrollbar {

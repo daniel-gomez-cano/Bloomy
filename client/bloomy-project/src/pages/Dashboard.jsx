@@ -6,6 +6,9 @@ import './dashboard.css'
 import { createCheckoutSession } from '../services/stripe'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { generateAIReport } from '../services/ai'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -14,6 +17,17 @@ export default function Dashboard() {
   const [coords, setCoords] = useState(null)
   const [dimensions, setDimensions] = useState('')
   const [shape, setShape] = useState('Irregular')
+  const [report, setReport] = useState('')
+  const [reportLoading, setReportLoading] = useState(false)
+  const [reportError, setReportError] = useState('')
+  const facts = [
+    'Las abejas polinizan cerca del 75% de los cultivos que consumimos.',
+    'La rotación de cultivos ayuda a mantener la salud del suelo y reduce plagas.',
+    'El pH del suelo influye en la disponibilidad de nutrientes para las plantas.',
+    'El riego por goteo puede ahorrar hasta un 50% de agua frente al riego tradicional.',
+    'La materia orgánica mejora la retención de agua y la estructura del suelo.'
+  ]
+  const [factIndex, setFactIndex] = useState(0)
 
   const handleUbicacionSeleccionada = (latlng) => {
     setCoords(latlng)
@@ -31,33 +45,42 @@ export default function Dashboard() {
     }
   }, [searchParams])
 
+  // Rotate facts while loading
+  useEffect(() => {
+    if (!reportLoading) return
+    const id = setInterval(() => {
+      setFactIndex((i) => (i + 1) % facts.length)
+    }, 6000)
+    return () => clearInterval(id)
+  }, [reportLoading])
+
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <main className="dashboard">
         <section className="ia-report-section">
           <h2>Reporte de IA</h2>
-          <p>Basado en las dimensiones y la disposición del terreno, se recomienda plantar las siguientes especies:</p>
-
-          <div className="plant-name">Lavanda (Lavandula angustifolia)</div>
-          <ul>
-            <li>Requiere pleno sol y suelo bien drenado.</li>
-            <li>Ideal para bordes y macizos de flores.</li>
-            <li>Atrae polinizadores como abejas y mariposas.</li>
-          </ul>
-          <p>Lavanda (Lavandula angustifolia) es una planta perenne que no solo embellece el jardín, sino que también contribuye a la biodiversidad al atraer polinizadores.</p>
-          <div className="plant-name">Rosa (Rosa spp.)</div>
-          <ul>
-            <li>Prefiere sol directo y suelo fértil.</li>
-            <li>Perfecta para jardines formales y arbustos.</li>
-            <li>Ofrece flores fragantes y coloridas.</li>
-          </ul>
-          <div className="plant-name">Girasol (Helianthus annuus)</div>
-          <ul>
-            <li>Necesita pleno sol y espacio para crecer.</li>
-            <li>Aporta altura y estructura al jardín.</li>
-            <li>Proporciona semillas comestibles y alimento para aves.</li>
-          </ul>
+          {!report && !reportLoading && (
+            <p>Selecciona una ubicación en el mapa y pulsa "Generar Reporte" para obtener recomendaciones personalizadas.</p>
+          )}
+          {reportLoading && (
+            <div>
+              <div className="loading-wrap">
+                <div className="spinner" />
+                <div>Generando reporte, por favor espera…</div>
+              </div>
+              <div className="didyouknow">
+                <span className="label">¿Sabías que?</span>
+                <span>{facts[factIndex]}</span>
+              </div>
+            </div>
+          )}
+          {reportError && <p style={{ color: '#ff6b6b' }}>{reportError}</p>}
+          {report && (
+            <div className="markdown-body">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{report}</ReactMarkdown>
+            </div>
+          )}
         </section>
 
         <section className="map-section">
@@ -85,7 +108,24 @@ export default function Dashboard() {
               >
                 Mejorar a Premium
               </button>
-              <button className="btn-outline">Generar Reporte</button>
+              <button
+                className="btn-outline"
+                onClick={async () => {
+                  setReportError('')
+                  if (!coords) { setReportError('Selecciona una ubicación en el mapa.'); return }
+                  try {
+                    setReportLoading(true)
+                    const { report: r } = await generateAIReport({ lat: coords.lat, lng: coords.lng })
+                    setReportLoading(false)
+                    setReport(r)
+                  } catch (err) {
+                    setReportLoading(false)
+                    setReportError(err?.response?.data?.message || 'No se pudo generar el reporte')
+                  }
+                }}
+              >
+                Generar Reporte
+              </button>
             </div>
           ) : (
             <>
@@ -95,7 +135,24 @@ export default function Dashboard() {
                   <label htmlFor="dimensions">Dimensiones del terreno (m²)</label>
                   <input value={dimensions} onChange={(e)=>setDimensions(e.target.value)} type="text" id="dimensions" placeholder="Ej: 20x20 ?" />
                 </div>
-                <button className="btn-accent">Generar Reporte</button>
+                <button
+                  className="btn-accent"
+                  onClick={async () => {
+                    setReportError('')
+                    if (!coords) { setReportError('Selecciona una ubicación en el mapa.'); return }
+                    try {
+                      setReportLoading(true)
+                      const { report: r } = await generateAIReport({ lat: coords.lat, lng: coords.lng, extras: { dimensions, shape } })
+                      setReportLoading(false)
+                      setReport(r)
+                    } catch (err) {
+                      setReportLoading(false)
+                      setReportError(err?.response?.data?.message || 'No se pudo generar el reporte')
+                    }
+                  }}
+                >
+                  Generar Reporte
+                </button>
               </div>
 
               <div className="input-group">
