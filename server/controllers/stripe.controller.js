@@ -85,3 +85,45 @@ export async function stripeWebhookHandler(req, res) {
 
   res.json({ received: true })
 }
+
+// Fallback for dev/demo: confirm a Checkout session on return
+// Use this if the webhook isn't reachable locally. Idempotent: safe to call multiple times.
+export async function confirmCheckoutSession(req, res) {
+  try {
+    const { session_id } = req.body || {}
+    if (!session_id) return res.status(400).json({ message: 'session_id requerido' })
+
+    // Identify current user (cookie auth)
+    const token = req.cookies?.bloomy_token
+    if (!token) return res.status(401).json({ message: 'No autenticado' })
+    const payload = verifyToken(token)
+    const user = await User.findById(payload.sub)
+    if (!user) return res.status(401).json({ message: 'No autenticado' })
+
+    const session = await stripe.checkout.sessions.retrieve(session_id)
+
+    // Basic ownership check: ensure the session email matches or metadata contains this user
+    const sessionUserId = session?.metadata?.userId
+    if (sessionUserId && sessionUserId !== String(user._id)) {
+      return res.status(403).json({ message: 'Sesión no corresponde al usuario' })
+    }
+
+    const isComplete = session.status === 'complete' || session.payment_status === 'paid'
+    if (!isComplete) {
+      return res.status(409).json({ message: 'La sesión aún no está completada' })
+    }
+
+    // Update user as premium (idempotent)
+    if (!user.isPremium) {
+      user.isPremium = true
+      user.stripeSubscriptionId = session.subscription || user.stripeSubscriptionId
+      user.stripeCustomerId = (typeof session.customer === 'string' ? session.customer : session.customer?.id) || user.stripeCustomerId
+      await user.save()
+    }
+
+    return res.json({ ok: true, isPremium: true })
+  } catch (err) {
+    console.error('confirmCheckoutSession error', err)
+    return res.status(500).json({ message: 'No se pudo confirmar la sesión' })
+  }
+}

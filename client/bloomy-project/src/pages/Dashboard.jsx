@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 import Map from '../components/Map'
 import { useAuth } from '../hooks/useAuth'
 import './dashboard.css'
-import { createCheckoutSession } from '../services/stripe'
+import { createCheckoutSession, confirmCheckoutSession } from '../services/stripe'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { generateAIReport } from '../services/ai'
@@ -36,13 +36,18 @@ export default function Dashboard() {
   // If we come back from Checkout with a session_id, refresh user
   useEffect(() => {
     const sessionId = searchParams.get('session_id')
-    if (sessionId) {
+    if (!sessionId) return
+    (async () => {
       try {
-        refresh()
-      } catch (err) {
-        console.error('Failed to refresh user after checkout', err)
+        // Confirm on server (fallback when webhook isn’t available locally)
+        await confirmCheckoutSession(sessionId)
+      } catch (e) {
+        // Not fatal; webhook may have already upgraded the user
+        console.warn('Confirm session fallback failed (webhook may handle it):', e?.response?.data || e.message)
+      } finally {
+        try { await refresh() } catch {}
       }
-    }
+    })()
   }, [searchParams])
 
   // Rotate facts while loading

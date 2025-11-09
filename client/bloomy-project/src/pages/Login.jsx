@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import BloomyLogo from '../assets/BloomyLogo.svg'
 import './login.css'
+import GoogleLoginButton from '../components/GoogleLoginButton'
 
 export default function Login() {
   const [form, setForm] = useState({ correo: '', contrasena: '' })
@@ -87,6 +88,14 @@ export default function Login() {
 
           {submitError && <p className="error-message" role="alert">{submitError}</p>}
           <button type="submit" className="login-submit">Ingresar</button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '12px 0' }}>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+            <span style={{ color: 'rgba(255,255,255,0.7)' }}>o</span>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+          </div>
+
+          <GoogleLoginButton onSuccess={() => navigate('/dashboard', { replace: true })} />
 
           <p className="login-switch">
             ¿No tienes cuenta? <Link to="/register">Regístrate</Link>

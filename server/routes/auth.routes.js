@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { login, logout, me, register, changePassword } from '../controllers/auth.controller.js'
+import { login, logout, me, register, changePassword, googleAuth } from '../controllers/auth.controller.js'
 import { requestEmailCode, verifyEmailCode } from '../controllers/email.controller.js'
 import { requestPasswordReset, verifyPasswordReset, resetPassword } from '../controllers/password.controller.js'
 
@@ -10,6 +10,7 @@ router.post('/login', login)
 router.get('/me', me)
 router.post('/logout', logout)
 router.post('/change-password', changePassword)
+router.post('/google', googleAuth)
 
 // Email verification
 router.post('/email/request-code', requestEmailCode)

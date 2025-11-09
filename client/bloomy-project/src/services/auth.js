@@ -58,3 +58,9 @@ export async function resetPassword(correo, codigo, contrasena) {
   const res = await api.post('/api/auth/password/reset', { correo, codigo, contrasena })
   return res.data
 }
+
+// Google login: send ID token obtained from Google Identity Services
+export async function loginWithGoogle(credential) {
+  const res = await api.post('/api/auth/google', { credential })
+  return res.data
+}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import './register.css'
 import { requestEmailVerification, verifyEmailVerification } from '../services/auth'
+import GoogleLoginButton from '../components/GoogleLoginButton'
 
 export default function Register() {
   const [form, setForm] = useState({ nombre: '', correo: '', contrasena: '', contrasena2: '' })
@@ -166,6 +167,14 @@ export default function Register() {
 
           {submitError && <p className="error-message" role="alert">{submitError}</p>}
           <button type="submit" className="register-submit">Registrarse</button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '12px 0' }}>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+            <span style={{ color: 'rgba(255,255,255,0.7)' }}>o</span>
+            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+          </div>
+
+          <GoogleLoginButton onSuccess={() => navigate('/dashboard', { replace: true })} />
           <p className="register-switch">¿Ya tienes una cuenta? <Link to="/login">Inicia sesión</Link></p>
         </form>
       </div>

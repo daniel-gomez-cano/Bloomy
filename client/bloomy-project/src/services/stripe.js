@@ -10,3 +10,8 @@ export async function createCheckoutSession() {
   const res = await api.post('/api/stripe/create-checkout-session')
   return res.data
 }
+
+export async function confirmCheckoutSession(sessionId) {
+  const res = await api.post('/api/stripe/confirm', { session_id: sessionId })
+  return res.data
+}

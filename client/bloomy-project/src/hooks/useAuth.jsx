@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { loginUser, registerUser, me as fetchMe, logoutUser } from '../services/auth'
+import { loginUser, registerUser, me as fetchMe, logoutUser, loginWithGoogle } from '../services/auth'
 
 const AuthContext = createContext(null)
 
@@ -45,7 +45,13 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
-  const value = useMemo(() => ({ user, loading, error, login, register, logout, refresh }), [user, loading, error])
+  const loginGoogle = async (credential) => {
+    const u = await loginWithGoogle(credential)
+    setUser(u)
+    return u
+  }
+
+  const value = useMemo(() => ({ user, loading, error, login, register, logout, refresh, loginGoogle }), [user, loading, error])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
