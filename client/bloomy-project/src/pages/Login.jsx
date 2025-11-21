@@ -58,13 +58,14 @@ export default function Login() {
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <div className="login-logo">
-            <img src={BloomyLogo} className="login-logo-img" alt="Bloomy Logo" />
+            <img src={BloomyLogo} className="login-logo-img" alt="Logo Bloomy" />
           </div>
           <h1 className="login-title">Login</h1>
 
           <label htmlFor="correo">Ingrese correo</label>
           <input
             type="email"
+            aria-label='Ingresa tu correo'
             id="correo"
             name="correo"
             placeholder="ejemplo@correo.com"

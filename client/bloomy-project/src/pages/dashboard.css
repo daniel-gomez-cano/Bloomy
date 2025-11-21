@@ -17,7 +17,7 @@
 
 /* -------- LEFT: IA REPORT SECTION -------- */
 .ia-report-section {
-  background-color: #000;
+  background-color: var(--color-surface);
   padding: 4rem 2rem 2rem; /* pequeño offset top para no chocar con navbar sticky */
   overflow-y: auto; /* own scroll for report */
   border-right: 1px solid var(--color-grid-line);
@@ -128,13 +128,19 @@
 }
 
 /* Markdown styling (basic) */
-.markdown-body h2 { font-family: var(--font-lora); font-size: 1.5rem; margin: 1rem 0 1rem; }
-.markdown-body h3 { font-family: var(--font-lora); font-size: 1.2rem; margin: 1rem 0 0.5rem; }
-.markdown-body p { margin: 1rem 0; color: rgba(255,255,255,0.85); }
-.markdown-body ul, .markdown-body ol { padding-left: 1.25rem; margin: 0.5rem 0; }
+.markdown-body h2 { font-family: var(--font-lora); font-size: 1.5rem; margin: 1rem 0 1rem; color: var(--color-text-primary); }
+.markdown-body h3 { font-family: var(--font-lora); font-size: 1.2rem; margin: 1rem 0 0.5rem; color: var(--color-text-primary); }
+.markdown-body h4, .markdown-body h5, .markdown-body h6 { font-family: var(--font-lora); margin: 0.75rem 0 0.5rem; color: var(--color-text-primary); font-size: 1rem; }
+.markdown-body p { margin: 1rem 0; color: var(--color-text-secondary); }
+.markdown-body ul, .markdown-body ol { padding-left: 1.25rem; margin: 0.5rem 0; color: var(--color-text-secondary); }
+.markdown-body li { margin: 0.4rem 0; color: var(--color-text-secondary); }
 .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; }
 .markdown-body th, .markdown-body td { border: 1px solid var(--color-grid-line); padding: 8px; }
-.markdown-body th { background: rgba(255,255,255,0.06); }
+.markdown-body th { background: rgba(0,0,0,0.06); }
+.markdown-body strong { color: var(--color-text-primary); }
+.markdown-body em { color: var(--color-text-secondary); }
+
+body.light-theme .markdown-body th { background: rgba(0,0,0,0.05); }
 
 /* Loading UI */
 .loading-wrap { display: flex; align-items: center; gap: 14px; }
@@ -146,7 +152,7 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.didyouknow { margin-top: 8px; color: rgba(255,255,255,0.85); font-size: 0.95rem; }
+.didyouknow { margin-top: 8px; color: var(--color-text-secondary); font-size: 0.95rem; }
 .didyouknow .label { color: var(--color-primary-accent); font-weight: 700; margin-right: 6px; }
 
 /* Scrollbar personalizado */
@@ -187,4 +193,31 @@
     overflow-y: visible; /* sin scroll interno */
     padding: 1.5rem;
   }
+}
+
+/* -------- Light theme overrides specific to Dashboard -------- */
+body.light-theme .ia-report-section {
+  /* Use the base background (#F5F1F3) for the report column in light mode */
+  background-color: var(--color-base);
+}
+
+body.light-theme .field input,
+body.light-theme .field select {
+  color: #121212;
+  border-color: rgba(0,0,0,0.25);
+}
+
+body.light-theme .btn-outline {
+  border-color: #000000;
+  color: #000000;
+}
+
+body.light-theme .btn-outline:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+body.light-theme .spinner {
+  border: 3px solid rgba(0,0,0,0.12);
+  border-top-color: var(--color-primary-accent);
 }

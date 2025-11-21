@@ -7,6 +7,17 @@ const COOKIE_NAME = 'bloomy_token'
 function buildPrompt({ isPremium, lat, lng, extras }) {
   const base = `
 Eres un asesor agrícola experto. Genera un reporte claro, estructurado y práctico en Markdown, en español.
+Genera un reporte moderno, visual, bonito y fácil de leer usando **solo Markdown estándar**. 
+NO uses arte ASCII (como cuadros hechos con "+---+"), NO uses código para simular tablas,
+NO uses delimitadores raros. Solo Markdown real.
+
+El estilo debe ser:
+- Títulos claros con ## y ###.
+- Tablas Markdown reales.
+- Listas con bullets.
+- Iconos Unicode (🌱💧🧪☀️🐛📌) para hacerlo visual.
+- Bloques destacados usando > (quote) cuando sea útil.
+- Diagramas simples hechos en texto pero sin bordes ASCII.
 Contexto del terreno:
 - Ubicación (lat, lng): ${lat}, ${lng}
 ${extras?.dimensions ? `- Dimensiones aproximadas: ${extras.dimensions}` : ''}
@@ -32,10 +43,18 @@ Secciones obligatorias:
 `
 
   return base + (isPremium ? premium : '') + `
-Formato:
-- Devuelve en Markdown, con títulos (##) y listas.
-- Evita afirmaciones falsas o datos inventados. Si alguna información no se puede determinar, indícalo claramente.
-- Evite mensajes de amabilidad como "¡Excelente iniciativa! Como asesor agrícola experto, he preparado un reporte estructurado y práctico para su terreno..." al principio y al final del reporte.
+Mejora visual obligatoria del reporte:
+- Usa Markdown avanzado para hacerlo altamente visual.
+- Divide la información en bloques muy claros: tablas, secciones cortas, viñetas.
+- Usa emojis solo para resaltar visualmente (🌱 riego, ☀️ sol, 🐛 plagas, ⚠️ riesgo).
+- Incluye como mínimo:
+  - 1 tabla markdown real de comparativa de cultivos óptimos.
+  - 1 cronograma visual (línea de tiempo mensual) para siembra y cosecha por cultivo.
+  - 1 tabla/resumen de riegos, fertilización y horas de sol.
+  - Indicadores visuales con barras ASCII para representar niveles (por ejemplo: Riego: ███░░ 60%).
+- Mantén el reporte conciso y altamente escaneable.
+- Evita párrafos largos; usa bloques, listas y resaltados.
+- No agregues mensajes introductorios ni despedidas.
   `
 }
 

@@ -73,7 +73,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <img src={BloomyLogo} alt="Bloomy Logo" className="logo-icon" />
+          <img src={BloomyLogo} alt="Logo de Bloomy" className="logo-icon" />
           <h1 className="logo-text">Bloomy</h1>
         </div>
 

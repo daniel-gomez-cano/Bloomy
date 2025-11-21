@@ -94,6 +94,7 @@ export default function Register() {
           <label htmlFor="nombre">Ingrese Nombre</label>
           <input
             type="text"
+            aria-label='nombre'
             id="nombre"
             name="nombre"
             placeholder="Cano"
@@ -106,7 +107,8 @@ export default function Register() {
           <label htmlFor="correo">Ingrese correo</label>
           <div className="inline-row">
             <input
-              type="email"
+              type="text"
+              aria-label='correo electronico'
               id="correo"
               name="correo"
               placeholder="ejemplo@correo.com"
@@ -156,6 +158,7 @@ export default function Register() {
           <label htmlFor="contrasena2">Ingrese contraseña de nuevo</label>
           <input
             type="password"
+            aria-label='Ingresa contraseña'
             id="contrasena2"
             name="contrasena2"
             placeholder="••••••••"

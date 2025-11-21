@@ -323,3 +323,55 @@
         background-color: rgba(3, 140, 131, 0.05);
     }
 }
+
+/* === Light theme overrides for Split Section === */
+body.light-theme .section {
+    background-color: var(--color-base);
+}
+
+body.light-theme .how-it-works-section {
+    color: var(--color-text-primary);
+    /* Softer, light gradient for light mode */
+    background: linear-gradient(-45deg, #e9f7f5, #f5fffe, #ffffff, #eef9f8);
+    background-size: 400% 400%;
+}
+
+body.light-theme .step {
+    background: rgba(0, 0, 0, 0.03);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+body.light-theme .step-title {
+    color: var(--color-text-primary);
+}
+
+body.light-theme .step-content li {
+    color: var(--color-text-secondary);
+}
+
+body.light-theme .premium-section {
+    background-color: var(--color-base);
+}
+
+body.light-theme .comparison-table thead th {
+    background-color: rgba(0,0,0,0.06);
+    color: var(--color-text-primary);
+}
+
+body.light-theme .comparison-table th:first-child,
+body.light-theme .comparison-table td:first-child {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+}
+
+body.light-theme .comparison-table th:last-child,
+body.light-theme .comparison-table td:last-child {
+    background-color: rgba(3, 140, 131, 0.08);
+    color: var(--color-text-primary);
+}
+
+@media (max-width: 700px) {
+    body.light-theme .comparison-table td:first-child {
+        background-color: var(--color-surface);
+    }
+}

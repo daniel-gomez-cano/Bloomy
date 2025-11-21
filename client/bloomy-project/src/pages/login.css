@@ -4,8 +4,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-primary-dark);
-  color: var(--color-white);
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
   position: relative;
   overflow: hidden;
 }
@@ -34,17 +34,17 @@
   padding: 10px 15px;
   font-family: var(--font-noto);
   font-size: 16px;
-  color: var(--Grey1);
+  color: var(--color-text-primary);
   outline: none;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .login-form input[type="email"]:focus,
-.login-form input[type="password"]:focus { border-color: var(--color-primary-accent); color: var(--color-white); }
+.login-form input[type="password"]:focus { border-color: var(--color-primary-accent); color: var(--color-text-primary); }
 
 .login-form input::placeholder { color: var(--Grey2); opacity: 1; }
 
-.login-form .input-error { border-color: var(--Red-Error) !important; color: var(--color-white); }
+.login-form .input-error { border-color: var(--Red-Error) !important; color: var(--color-text-primary); }
 .login-form .error-message { color: var(--Red-Error); font-size: 14px; margin-top: -6px; }
 
 .login-submit {
@@ -63,6 +63,6 @@
 
 .login-submit:hover { background-color: var(--color-primary-accent-hover); }
 
-.login-switch { text-align: center; margin-top: 8px; color: var(--color-white); }
+.login-switch { text-align: center; margin-top: 8px; color: var(--color-text-secondary); }
 .login-switch a { color: var(--color-primary-accent); text-decoration: none; font-weight: 600; }
 .login-switch a:hover { color: var(--color-primary-accent-hover); }

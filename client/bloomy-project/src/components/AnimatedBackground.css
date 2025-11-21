@@ -73,3 +73,22 @@
     opacity: 0.3;
   }
 }
+
+/* Light theme adjustments: soften grid and spotlight on light backgrounds */
+body.light-theme .grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+
+body.light-theme .spotlight {
+  opacity: 0.25;
+  filter: blur(40px);
+  background: radial-gradient(
+    circle,
+    rgba(2, 52, 54, 0.6) 0%,
+    rgba(0, 94, 85, 0.2) 35%,
+    rgba(3, 140, 131, 0.15) 5%,
+    transparent 100%
+  );
+}

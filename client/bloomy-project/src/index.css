@@ -1,17 +1,22 @@
 /* Variables CSS */
 :root {
-  --color-primary-dark: #121212;
+  /* Base (dark theme defaults) */
+  --color-base: #121212; /* fondo oscuro no totalmente negro */
+  --color-surface: #000000; /* superficies más profundas */
+  --color-primary-dark: var(--color-base); /* legacy alias */
   --color-primary-accent: #038C83;
   --color-primary-accent-hover: #026B63;
-  --color-white: #ffffff;
+  --color-white: #ffffff; /* mantener para iconos / fondos claros */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.85);
   --color-grid-line: rgba(255, 255, 255, 0.1);
   --font-lora: 'Lora', serif;
   --font-noto: 'Noto Sans', sans-serif;
-  /* Additional theme tokens used by Register page */
+  /* Additional page tokens */
   --Corp: #038C83;
-  --Grey1: #5A5A5A; /* Input text value color */
-  --Grey2: #979797; /* Placeholder / default input border */
-  --Bord: #023436;  /* Border/decorative */
+  --Grey1: #5A5A5A;
+  --Grey2: #979797;
+  --Bord: #023436;
   --Red-Error: #FF0000;
 }
 
@@ -26,8 +31,9 @@ body {
   font-family: var(--font-noto), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-primary-dark);
-  color: var(--color-white);
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Fuentes personalizadas */
@@ -49,7 +55,7 @@ body {
   align-items: center;
   text-align: center;
   padding: 2rem;
-  background-color: #000000;
+  background-color: var(--color-surface);
   overflow: hidden;
 }
 
@@ -68,7 +74,7 @@ body {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .hero-description {
@@ -77,7 +83,7 @@ body {
   line-height: 1.6;
   margin-bottom: 2rem;
   max-width: 600px;
-  color: #ffffff;
+  color: var(--color-text-secondary);
 }
 
 .cta-button {
@@ -105,7 +111,7 @@ body {
   left: 0;
   width: 100%;
   height: 60px;
-  background-color: #000000;
+  background-color: var(--color-surface);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   z-index: 10050; /* ensure navbar sits above map and other layers */
 }
@@ -141,7 +147,7 @@ body {
   font-family: 'Lora', serif;
   font-size: 32px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -166,7 +172,7 @@ body {
   font-family: 'Noto Sans', sans-serif;
   font-size: 16px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--color-text-primary);
   text-decoration: none;
   transition: color 0.2s ease;
   /* Normalize appearance when used on <button> too */
@@ -233,8 +239,8 @@ body {
 .navbar-profile { position: relative; }
 .profile-btn { background: transparent; border: none; cursor: pointer; padding: 0; }
 .profile-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary-accent); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
-.profile-menu { position: absolute; right: 0; top: 64px; background: #0b0b0b; border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px; min-width: 200px; z-index: 10070; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
-.profile-name { color: var(--color-white); font-weight: 600; margin-bottom: 4px; }
+.profile-menu { position: absolute; right: 0; top: 64px; background: var(--color-surface); border: 1px solid var(--color-grid-line); padding: 10px; border-radius: 8px; min-width: 200px; z-index: 10070; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+.profile-name { color: var(--color-text-primary); font-weight: 600; margin-bottom: 4px; }
 .profile-status { color: var(--color-primary-accent); font-size: 0.9rem; margin-bottom: 8px; }
 .logout-btn { width: 100%; background: transparent; color: var(--color-primary-accent); border: 1px solid var(--color-primary-accent); padding: 8px; border-radius: 6px; cursor: pointer; }
 .logout-btn:hover { background: var(--color-primary-accent); color: #fff; }
@@ -245,13 +251,13 @@ body {
 
 /* Mobile responsive navbar */
 .mobile-toggle { display: none; background: transparent; border: none; cursor: pointer; }
-.mobile-menu { position: absolute; right: 16px; top: 64px; background: #0b0b0b; border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 8px; z-index: 10070; min-width: 200px; }
+.mobile-menu { position: absolute; right: 16px; top: 64px; background: var(--color-surface); border: 1px solid var(--color-grid-line); padding: 12px; border-radius: 8px; z-index: 10070; min-width: 200px; }
 .mobile-links { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
-.mobile-menu .navbar-link { color: var(--color-white); }
+.mobile-menu .navbar-link { color: var(--color-text-primary); }
 
 /* Change password form inside profile menu */
 .profile-change { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
-.profile-change input { background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: #fff; outline: none; }
+.profile-change input { background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 8px 10px; color: var(--color-text-primary); outline: none; }
 .profile-change input:focus { border-color: var(--color-primary-accent); }
 .profile-msg { font-size: 0.9rem; }
 .profile-msg.error { color: #ff6b6b; }
@@ -298,7 +304,7 @@ body {
 
 .why-bloomy .subtitle {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-secondary);
   max-width: 700px;
   margin: 0 auto 60px;
   line-height: 1.6;
@@ -317,7 +323,7 @@ body {
 
 
 .card {
-  background-color: #000000;
+  background-color: var(--color-surface);
   border: 1px solid var(--color-primary-accent);
   border-radius: 10px;
   padding: 30px 20px;
@@ -348,7 +354,7 @@ body {
 .card p {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-secondary);
 }
 
 /* Split Section (¿Cómo funciona?) */
@@ -367,7 +373,7 @@ body {
 }
 
 .panel-left {
-  background-color: #000000;
+  background-color: var(--color-surface);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -393,7 +399,7 @@ body {
 }
 
 .panel-right {
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-base);
   padding: 1rem 1rem;
   overflow-y: auto;
 }
@@ -410,7 +416,7 @@ body {
   font-weight: 700;
   text-align: center;
   margin-bottom: 2rem;
-  color: #ffffff;
+  color: var(--color-text-primary);
   line-height: 1.2;
 }
 
@@ -440,12 +446,12 @@ body {
 .column-text p {
   margin-top: 0;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
 .content-footer p {
-  color: var(--color-white);
+  color: var(--color-text-primary);
   margin-top: 1rem;
 }
 
@@ -454,11 +460,66 @@ body {
   margin-top: 40px;
 }
 
+/* Light theme overrides */
+body.light-theme {
+  --color-base: #F5F1F3; /* fondo claro */
+  --color-surface: #FFFFFF; /* superficies antes completamente negras */
+  --color-text-primary: #121212; /* texto principal oscuro */
+  --color-text-secondary: rgba(18,18,18,0.75); /* texto secundario para listas y párrafos */
+  --color-grid-line: rgba(0, 0, 0, 0.1);
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
+}
+
+body.light-theme .navbar,
+body.light-theme .hero-section,
+body.light-theme .card,
+body.light-theme .panel-left,
+body.light-theme .profile-menu,
+body.light-theme .mobile-menu {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+body.light-theme .profile-menu,
+body.light-theme .mobile-menu {
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+body.light-theme .navbar-link,
+body.light-theme .content-title,
+body.light-theme .card h3,
+body.light-theme .why-bloomy h2 {
+  color: var(--color-text-primary);
+}
+
+body.light-theme .card p,
+body.light-theme .column-text p,
+body.light-theme .hero-description,
+body.light-theme .footer-column p,
+body.light-theme .footer-column a {
+  color: rgba(18,18,18,0.8);
+}
+
+body.light-theme .cta-section {
+  background-color: #FFFFFF;
+  color: var(--color-text-primary);
+}
+
+body.light-theme .cta-section p { color: rgba(18,18,18,0.7); }
+body.light-theme .navbar-cta { color: var(--color-primary-accent); border-color: var(--color-primary-accent); }
+body.light-theme .navbar-cta:hover { background: var(--color-primary-accent); color: #fff; }
+body.light-theme .profile-change input { color: var(--color-text-primary); border-color: rgba(0,0,0,0.25); }
+body.light-theme .profile-change input:focus { border-color: var(--color-primary-accent); }
+body.light-theme .why-bloomy { background-color: var(--color-base); }
+body.light-theme .footer-column li { color: rgba(18,18,18,0.8); }
+
 .cta-section {
   background-color: #1a1a1a;
   text-align: center;
   padding: 80px 20px;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .cta-section h2 {
@@ -470,7 +531,7 @@ body {
 
 .cta-section p {
   font-family: var(--font-noto);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-secondary);
   font-size: 1rem;
   margin-bottom: 30px;
 }
@@ -504,8 +565,8 @@ body {
 }
 
 .btn-secondary {
-  color: var(--color-white);
-  border: 2px solid var(--color-white);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-text-primary);
 }
 
 .btn-secondary:hover {
@@ -513,10 +574,10 @@ body {
 }
 
 .footer-bottom {
-  background-color: var(--color-primary-dark);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--color-base);
+  border-top: 1px solid var(--color-grid-line);
   padding: 60px 20px;
-  color: var(--color-white);
+  color: var(--color-text-primary);
 }
 
 .footer-container {
@@ -538,7 +599,7 @@ body {
 .footer-column li,
 .footer-column a {
   font-family: var(--font-noto);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   line-height: 1.6;
 }
