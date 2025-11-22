@@ -44,9 +44,9 @@ if (process.env.SERVE_CLIENT === 'true') {
 	const __dirname = path.dirname(__filename)
 	const clientDist = path.join(__dirname, '../client/bloomy-project/dist')
 	app.use(express.static(clientDist))
-	// Fallback for SPA routes not starting with /api
-	app.get('*', (req, res, next) => {
-		if (req.path.startsWith('/api')) return next()
+	// Fallback for SPA routes not starting with /api (Express 5 path-to-regexp: use parameter wildcard)
+	app.get('/:path(*)', (req, res, next) => {
+		if (req.path.startsWith('/api') || req.path === '/health') return next()
 		res.sendFile(path.join(clientDist, 'index.html'))
 	})
 }
