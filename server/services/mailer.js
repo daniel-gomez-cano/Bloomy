@@ -1,6 +1,9 @@
 import 'dotenv/config'
 import nodemailer from 'nodemailer'
 
+// HTTP provider (Resend) key; if present we bypass raw SMTP to avoid host restrictions
+const resendKey = process.env.RESEND_API_KEY
+
 const host = process.env.SMTP_HOST // e.g. smtp.gmail.com
 const port = Number(process.env.SMTP_PORT || 587) // 465 (SSL) or 587 (STARTTLS)
 const user = process.env.SMTP_USER // full email address
@@ -33,12 +36,41 @@ export function getTransporter() {
 }
 
 export async function sendMail({ to, subject, html, text }) {
+  // Prefer HTTP API provider if available (more reliable on serverless/hosted platforms)
+  if (resendKey) {
+    try {
+      const body = {
+        from,
+        to: Array.isArray(to) ? to : [to],
+        subject,
+        html,
+        text,
+      }
+      const resp = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      if (!resp.ok) {
+        const errText = await resp.text()
+        throw new Error(`Resend error ${resp.status}: ${errText}`)
+      }
+      const data = await resp.json()
+      return data
+    } catch (err) {
+      console.error('sendMail Resend error, falling back to SMTP if possible', err)
+      // If HTTP provider fails, attempt SMTP as fallback
+    }
+  }
   const t = getTransporter()
   try {
     const info = await t.sendMail({ from, to, subject, html, text })
     return info
   } catch (err) {
-    console.error('sendMail error', err)
+    console.error('sendMail SMTP error', err)
     throw err
   }
 }
