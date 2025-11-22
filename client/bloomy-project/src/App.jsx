@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import Consejos from './pages/Consejos'
 import PremiumRoute from './components/PremiumRoute'
+import ChatBloomy from './pages/ChatBloomy'
 import ForgotPassword from './pages/ForgotPassword'
 
 function App() {
@@ -30,6 +31,14 @@ function App() {
         element={
           <PremiumRoute>
             <Consejos />
+          </PremiumRoute>
+        }
+      />
+      <Route
+        path="/bloomy-ia"
+        element={
+          <PremiumRoute>
+            <ChatBloomy />
           </PremiumRoute>
         }
       />

@@ -26,7 +26,7 @@ export default function Map({ onUbicacionSeleccionada }) {
 
   const tileUrl = isLight
     ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   const attribution = isLight
     ? '&copy; OpenStreetMap contributors'
     : '&copy; OpenStreetMap contributors &copy; CARTO';

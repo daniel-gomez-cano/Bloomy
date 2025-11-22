@@ -24,6 +24,7 @@ const Navbar = () => {
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isHome = location.pathname === '/' || location.pathname === ''
   const isConsejos = location.pathname.startsWith('/consejos')
+  const isChat = location.pathname.startsWith('/bloomy-ia')
   const isPremium = !!user?.isPremium
 
   const handleLogout = async () => {
@@ -73,8 +74,10 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <img src={BloomyLogo} alt="Logo de Bloomy" className="logo-icon" />
-          <h1 className="logo-text">Bloomy</h1>
+          <a onClick={() => navigate('/')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}   >
+            <img src={BloomyLogo} alt="Logo de Bloomy" className="logo-icon" />
+            <h1 className="logo-text">Bloomy</h1>
+          </a>
         </div>
 
         <div className="navbar-menu">
@@ -95,7 +98,7 @@ const Navbar = () => {
             )}
 
             {/* En /consejos mostrar link para volver a Dashboard */}
-            {isConsejos && (
+            {(isConsejos || isChat) && (
               <button className="navbar-link" onClick={() => navigate('/dashboard')}>
                 Dashboard
               </button>
@@ -110,11 +113,32 @@ const Navbar = () => {
                 Consejos
               </button>
             )}
+          
+            {isChat && (
+              <button
+                className="navbar-link"
+                onClick={() => navigate('/consejos')}
+              >
+                Consejos
+              </button>
+            )}
 
             <a href="https://wa.me/3163197861" className="navbar-link" target="_blank" rel="noreferrer">
               Soporte
             </a>
           </div>
+          
+          {/* Bloomy IA button - prominent, left of theme toggle */}
+            {isDashboard && isPremium && !isChat && (
+              <button
+                className="navbar-ia-btn"
+                onClick={() => navigate('/bloomy-ia')}
+                aria-label="Abrir Bloomy IA"
+              >
+                <span className="ia-icon" aria-hidden="true">✦</span>
+                <span className="ia-text">Bloomy IA</span>
+              </button>
+            )}
 
           <ThemeToggle />
 
@@ -216,7 +240,7 @@ const Navbar = () => {
                 )}
 
                 {/* En /consejos en mobile, incluir 'Dashboard' para volver */}
-                {isConsejos && (
+                {(isConsejos || isChat) && (
                   <button
                     className="navbar-link"
                     onClick={() => { setMobileOpen(false); navigate('/dashboard') }}
@@ -227,6 +251,22 @@ const Navbar = () => {
 
                 {/* Consejos en mobile: solo para premium dentro de dashboard y no en /consejos */}
                 {isDashboard && isPremium && !isConsejos && (
+                  <button
+                    className="navbar-link"
+                    onClick={() => { setMobileOpen(false); navigate('/consejos') }}
+                  >
+                    Consejos
+                  </button>
+                )}
+                {isDashboard && isPremium && !isChat && (
+                  <button
+                    className="navbar-ia-btn"
+                    onClick={() => { setMobileOpen(false); navigate('/bloomy-ia') }}
+                  >
+                    <span className="ia-icon" aria-hidden="true">✦</span> Bloomy IA
+                  </button>
+                )}
+                {isChat && (
                   <button
                     className="navbar-link"
                     onClick={() => { setMobileOpen(false); navigate('/consejos') }}

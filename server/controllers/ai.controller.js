@@ -88,3 +88,91 @@ export async function generateReport(req, res) {
     return res.status(500).json({ message: `No se pudo generar el reporte${detail}` })
   }
 }
+
+// ===== Chat Streaming Implementation =====
+// Simple in-memory rate limiting: 8 requests per rolling 60s window per user
+const chatRate = new Map() // key: userId, value: array of timestamps (ms)
+
+function canProceed(userId) {
+  const now = Date.now()
+  const arr = chatRate.get(userId) || []
+  // keep only last 60s
+  const filtered = arr.filter(t => now - t < 60_000)
+  if (filtered.length >= 8) return false
+  filtered.push(now)
+  chatRate.set(userId, filtered)
+  return true
+}
+
+// Build chat prompt from messages (session only). Expect messages: [{role:'user'|'assistant', text:string}]
+function buildChatPrompt(messages) {
+  const header = `Eres Bloomy-IA, asistente agrícola premium. Responde SIEMPRE en español, con tono claro, profesional y cercano. Usa Markdown simple (párrafos cortos, listas cuando aporten). No inventes datos climáticos específicos no solicitados ni hagas promesas garantizadas. Si el usuario pregunta algo fuera de agricultura, puedes responder brevemente o pedir que vuelva al contexto agrícola. Evita despedidas formales, responde directo.`
+  const convo = messages
+    .map(m => `${m.role === 'user' ? 'Usuario' : 'Asistente'}: ${m.text.trim()}`)
+    .join('\n')
+  return `${header}\n\nConversación actual:\n${convo}\n\nResponde al último mensaje del Usuario de forma útil y concisa.`
+}
+
+export async function chatStream(req, res) {
+  try {
+    const token = req.cookies?.[COOKIE_NAME]
+    if (!token) return res.status(401).json({ message: 'No autenticado' })
+    const payload = verifyToken(token)
+    const user = await User.findById(payload.sub)
+    if (!user) return res.status(401).json({ message: 'No autenticado' })
+    if (!user.isPremium) return res.status(403).json({ message: 'Funcionalidad sólo para usuarios premium' })
+
+    if (!canProceed(user.id)) {
+      return res.status(429).json({ message: 'Límite de velocidad excedido (máx 8/min)' })
+    }
+
+    const { messages } = req.body || {}
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ message: 'messages requerido' })
+    }
+
+    const apiKey = process.env.GOOGLE_API_KEY
+    if (!apiKey) return res.status(500).json({ message: 'Falta GOOGLE_API_KEY en el servidor' })
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const modelName = process.env.GOOGLE_MODEL || 'gemini-2.5-flash'
+    const model = genAI.getGenerativeModel({ model: modelName })
+    const prompt = buildChatPrompt(messages)
+
+    // Prepare streaming response headers
+    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Cache-Control', 'no-cache')
+    res.setHeader('Connection', 'keep-alive')
+    res.flushHeaders?.()
+
+    function sendEvent(obj) {
+      res.write(`data: ${JSON.stringify(obj)}\n\n`)
+    }
+
+    try {
+      // Streaming via Gemini SDK (generateContentStream). Fallback to non-stream if not available.
+      if (typeof model.generateContentStream === 'function') {
+        const streamResult = await model.generateContentStream({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
+        for await (const item of streamResult.stream) {
+          const partText = item?.text()
+          if (partText) sendEvent({ token: partText })
+        }
+      } else {
+        const result = await model.generateContent(prompt)
+        const text = result?.response?.text?.() || ''
+        // Emit in pseudo-chunks (split by sentence) for UX consistency
+        text.split(/(?<=[.!?])\s+/).forEach(chunk => {
+          if (chunk.trim()) sendEvent({ token: chunk + ' ' })
+        })
+      }
+      sendEvent({ done: true })
+      res.end()
+    } catch (err) {
+      console.error('chatStream inner error', err)
+      sendEvent({ error: 'Error generando respuesta' })
+      res.end()
+    }
+  } catch (err) {
+    console.error('chatStream error', err)
+    return res.status(500).json({ message: 'Error interno' })
+  }
+}

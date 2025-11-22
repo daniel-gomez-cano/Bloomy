@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import './consejos.css'
 import PreparacionSuelo from './consejos/PreparacionSuelo'
+import TecnicasRiego from './consejos/TecnicasRiego'
+import ControlPlagas from './consejos/ControlPlagas'
+import CosechaAlmacenamiento from './consejos/CosechaAlmacenamiento'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../hooks/useAuth'
 
@@ -13,6 +16,36 @@ const items = [
       { id: 'suelo-analisis', title: 'Análisis del suelo' },
       { id: 'suelo-nutrientes', title: 'Mejora de nutrientes' },
       { id: 'suelo-drenaje', title: 'Drenaje y aireación' },
+    ],
+  },
+  {
+    id: 'tecnicas-riego',
+    title: 'Técnicas de Riego',
+    component: <TecnicasRiego />,
+    children: [
+      { id: 'riego-goteo', title: 'Riego por goteo' },
+      { id: 'riego-aspersion', title: 'Riego por aspersión' },
+      { id: 'riego-eficiente', title: 'Manejo eficiente del agua' },
+    ],
+  },
+  {
+    id: 'control-plagas',
+    title: 'Control de Plagas',
+    component: <ControlPlagas />,
+    children: [
+      { id: 'metodos-preventivos', title: 'Métodos preventivos' },
+      { id: 'control-biologico', title: 'Control biológico' },
+      { id: 'insecticidas-naturales', title: 'Insecticidas naturales' },
+    ],
+  },
+  {
+    id: 'cosecha-almacenamiento',
+    title: 'Cosecha y Almacenamiento',
+    component: <CosechaAlmacenamiento />,
+    children: [
+      { id: 'cosecha-momento', title: 'Momento ideal para cosechar' },
+      { id: 'cosecha-tecnicas', title: 'Técnicas de recolección' },
+      { id: 'cosecha-conservacion', title: 'Conservación de productos' },
     ],
   },
   // Puedes agregar más secciones aquí
