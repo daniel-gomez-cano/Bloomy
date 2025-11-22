@@ -1,8 +1,17 @@
 import 'dotenv/config'
 import nodemailer from 'nodemailer'
+import sgMail from '@sendgrid/mail'
 
 // HTTP provider (Resend) key; if present we bypass raw SMTP to avoid host restrictions
 const resendKey = process.env.RESEND_API_KEY
+const sendgridKey = process.env.SENDGRID_API_KEY
+if (sendgridKey) {
+  try {
+    sgMail.setApiKey(sendgridKey)
+  } catch (e) {
+    console.error('Failed to set SendGrid API key', e)
+  }
+}
 
 const host = process.env.SMTP_HOST // e.g. smtp.gmail.com
 const port = Number(process.env.SMTP_PORT || 587) // 465 (SSL) or 587 (STARTTLS)
@@ -36,7 +45,25 @@ export function getTransporter() {
 }
 
 export async function sendMail({ to, subject, html, text }) {
-  // Prefer HTTP API provider if available (more reliable on serverless/hosted platforms)
+  // 1. SendGrid (permite verificación de single sender sin dominio propio)
+  if (sendgridKey) {
+    try {
+      const senderEmail = from.replace(/.*<|>/g, '') || from
+      const msg = {
+        to: Array.isArray(to) ? to : [to],
+        from: senderEmail,
+        subject,
+        html: html || undefined,
+        text: text || undefined,
+      }
+      const [resp] = await sgMail.send(msg)
+      return { ok: true, provider: 'sendgrid', messageId: resp?.headers?.get?.('x-message-id') }
+    } catch (err) {
+      console.error('sendMail SendGrid error, trying next provider', err)
+    }
+  }
+
+  // 2. Resend (requiere dominio verificado; gmail.com será rechazado)
   if (resendKey) {
     try {
       const body = {
