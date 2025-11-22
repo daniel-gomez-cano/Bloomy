@@ -1,5 +1,7 @@
 import 'dotenv/config'
 import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { connectDB } from './config/db.js'
@@ -13,8 +15,9 @@ const app = express()
 // Basic middleware
 app.use(cors({
 	origin: (origin, cb) => {
-		const allow = [process.env.CLIENT_ORIGIN || 'http://localhost:5173']
-		// allow same-origin or no-origin (like curl/postman)
+		// Allow multiple comma-separated origins via CLIENT_ORIGINS (fallback CLIENT_ORIGIN)
+		const raw = process.env.CLIENT_ORIGINS || process.env.CLIENT_ORIGIN || 'http://localhost:5173'
+		const allow = raw.split(',').map(o => o.trim()).filter(Boolean)
 		if (!origin || allow.includes(origin)) return cb(null, true)
 		return cb(new Error('Not allowed by CORS'))
 	},
@@ -33,6 +36,20 @@ app.use('/api/ai', aiRoutes)
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }))
+
+// ===== Optional static client serving (single Render service) =====
+// Enable by setting SERVE_CLIENT=true and ensuring the client build is present at ../client/bloomy-project/dist
+if (process.env.SERVE_CLIENT === 'true') {
+	const __filename = fileURLToPath(import.meta.url)
+	const __dirname = path.dirname(__filename)
+	const clientDist = path.join(__dirname, '../client/bloomy-project/dist')
+	app.use(express.static(clientDist))
+	// Fallback for SPA routes not starting with /api
+	app.get('*', (req, res, next) => {
+		if (req.path.startsWith('/api')) return next()
+		res.sendFile(path.join(clientDist, 'index.html'))
+	})
+}
 
 const PORT = process.env.PORT || 3000
 connectDB()
