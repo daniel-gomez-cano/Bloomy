@@ -10,7 +10,9 @@ if (!secret) {
 }
 const stripe = new Stripe(secret || '', { apiVersion: '2022-11-15' })
 const PRICE_ID = process.env.STRIPE_PRICE_ID
-const CLIENT_URL = process.env.CLIENT_ORIGIN || process.env.VITE_CLIENT_URL || 'http://localhost:5173'
+// APP_BASE_URL: dominio público del frontend (en despliegue single-service puede ser el mismo dominio Render)
+// Fallbacks mantienen compatibilidad local
+const APP_BASE_URL = process.env.APP_BASE_URL || process.env.CLIENT_ORIGIN || process.env.VITE_CLIENT_URL || 'http://localhost:5173'
 
 export async function createCheckoutSession(req, res) {
   try {
@@ -28,8 +30,8 @@ export async function createCheckoutSession(req, res) {
       line_items: [{ price: PRICE_ID, quantity: 1 }],
       customer_email: user.correo,
       metadata: { userId: user._id.toString() },
-      success_url: `${CLIENT_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${CLIENT_URL}/dashboard?canceled=true`,
+      success_url: `${APP_BASE_URL.replace(/\/$/, '')}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${APP_BASE_URL.replace(/\/$/, '')}/dashboard?canceled=true`,
     })
 
     return res.json({ url: session.url })
