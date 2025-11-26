@@ -206,7 +206,12 @@ body {
 .navbar-ia-btn .ia-text { letter-spacing:.5px; }
 body.light-theme .navbar-ia-btn { border-color: var(--color-primary-accent); }
 body.light-theme .navbar-ia-btn:hover { box-shadow:0 0 0 4px rgba(3,140,131,0.25); }
-@media (max-width:768px){ .navbar-links .navbar-ia-btn { display:none; } }
+@media (max-width:768px){
+  /* Ocultar el botón Bloomy IA sólo en la barra principal */
+  .navbar-menu > .navbar-ia-btn { display:none; }
+  /* Mantener disponible dentro del menú móvil */
+  .mobile-menu .navbar-ia-btn { display:flex; }
+}
 
 .navbar-link {
   font-family: 'Noto Sans', sans-serif;

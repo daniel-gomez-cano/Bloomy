@@ -10,9 +10,6 @@ export default function PreparacionSuelo() {
         <li>Incorporar materia orgánica como compost o humus para mejorar la estructura.</li>
         <li>Garantizar un buen drenaje para evitar encharcamientos que dañen las raíces.</li>
       </ul>
-      <div className="image-container">
-        <img src="/src/assets/mapPlaceholder.svg" alt="Plántula creciendo en suelo oscuro y húmedo" />
-      </div>
 
       <h2 id="suelo-analisis">Análisis del suelo</h2>
       <p>El análisis de suelo permite conocer el estado químico y físico antes de invertir en fertilizantes. Idealmente se toma una muestra compuesta (de 8 a 12 submuestras) a una profundidad de 15–20 cm usando una barrena limpia. Se mezcla, se seca a la sombra y se envía a un laboratorio.</p>

@@ -2,6 +2,7 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useState, useEffect } from 'react';
+import L from 'leaflet'
 
 function LocationMarker({ onSelect }) {
   useMapEvents({
@@ -38,7 +39,17 @@ export default function Map({ onUbicacionSeleccionada }) {
         setPosicion(coords);
         onUbicacionSeleccionada(coords);
       }} />
-      {posicion && <Marker position={posicion} />}
+      {posicion && (
+        <Marker
+          position={posicion}
+          icon={L.divIcon({
+            className: 'bloomy-pin',
+            html: `<div style="font-size:24px; line-height:24px;">📍</div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 24],
+          })}
+        />
+      )}
     </MapContainer>
   );
 }

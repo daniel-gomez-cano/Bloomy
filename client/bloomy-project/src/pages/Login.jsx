@@ -58,7 +58,9 @@ export default function Login() {
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <div className="login-logo">
-            <img src={BloomyLogo} className="login-logo-img" alt="Logo Bloomy" />
+            <a href="/" aria-label="Ir a inicio">
+              <img src={BloomyLogo} className="login-logo-img" alt="Logo Bloomy" />
+            </a>
           </div>
           <h1 className="login-title">Login</h1>
 

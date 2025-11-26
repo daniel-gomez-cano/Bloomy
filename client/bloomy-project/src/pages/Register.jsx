@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import './register.css'
+import BloomyLogo from '../assets/BloomyLogo.svg'
 import { requestEmailVerification, verifyEmailVerification } from '../services/auth'
 import GoogleLoginButton from '../components/GoogleLoginButton'
 
@@ -89,6 +90,11 @@ export default function Register() {
         </div>
 
         <form className="register-form" onSubmit={handleSubmit} noValidate>
+          <div className="login-logo" style={{ marginBottom: 8 }}>
+            <a href="/" aria-label="Ir a inicio">
+              <img src={BloomyLogo} className="login-logo-img" alt="Logo Bloomy" />
+            </a>
+          </div>
           <h1 className="register-title">Register</h1>
 
           <label htmlFor="nombre">Ingrese Nombre</label>

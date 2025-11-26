@@ -91,6 +91,14 @@
   padding: 0.5rem 0.7rem;
   color: var(--color-white);
   font-size: 0.9rem;
+  /* Hint the browser to use dark popover styling when possible */
+  color-scheme: dark;
+}
+
+.field option {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+  font-size: 0.9rem;
 }
 
 .field input::placeholder {
@@ -205,6 +213,7 @@ body.light-theme .field input,
 body.light-theme .field select {
   color: #121212;
   border-color: rgba(0,0,0,0.25);
+  color-scheme: light;
 }
 
 body.light-theme .btn-outline {

@@ -23,10 +23,15 @@
   bottom: 0;
   height: 300px;
   z-index: 0;
+  pointer-events: none;
 }
 .register-page .left-svg { left: 0; bottom: -4rem; }
 .register-page .right-svg { right: 0; bottom: -4rem; }
 .register-page .decorative-svg svg { width: 264px; height: 251px; display: block; }
+
+@media (max-width: 600px) {
+  .register-page .decorative-svg { display: none; }
+}
 
 /* Form */
 .register-form {
