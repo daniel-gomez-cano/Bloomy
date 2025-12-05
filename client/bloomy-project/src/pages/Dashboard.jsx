@@ -6,9 +6,165 @@ import './dashboard.css'
 import { createCheckoutSession, confirmCheckoutSession } from '../services/stripe'
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { generateAIReport } from '../services/ai'
+import { generateAIReport, generateAIReportWithData } from '../services/ai'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
+import { Bar } from 'react-chartjs-2'
+import './visual-dashboard.css'
+
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend)
+
+function VisualDashboard({ data }) {
+  if (!data || !data.cultivos) return null
+
+  // Removed: Niveles (doughnut) and Horas de Sol single-value chart
+
+  const riegoSemanalData = {
+    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+    datasets: [{
+      label: 'Litros/m²',
+      data: (data.riego?.semanalLitrosPorM2 || []).slice(0,6),
+      backgroundColor: '#3B82F6'
+    }]
+  }
+
+  const fertSemanalData = {
+    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+    datasets: [{
+      label: 'Índice',
+      data: (data.fertilizacion?.semanalIndice || []).slice(0,6),
+      backgroundColor: '#10B981'
+    }]
+  }
+
+  const solSemanalData = {
+    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+    datasets: [{
+      label: 'Horas',
+      data: (data.clima?.semanalHorasSol || []).slice(0,6),
+      backgroundColor: '#F59E0B'
+    }]
+  }
+
+  const distribucionData = {
+    labels: (data.distribucion?.porcentajesZona || []).map(z => z.zona),
+    datasets: [{
+      label: '% Zona',
+      data: (data.distribucion?.porcentajesZona || []).map(z => z.porcentaje),
+      backgroundColor: ['#3B82F6','#10B981','#F59E0B','#EC4899','#8B5CF6']
+    }]
+  }
+
+  // Removed: Doughnut plagas por riesgo
+
+  return (
+    <div className="visual-dashboard">
+      {/* Cultivos Recomendados */}
+      <div className="dashboard-section cultivos">
+        <h3>Cultivos recomendados</h3>
+        <div className="cultivos-grid">
+          {(data.cultivos || []).slice(0, 5).map((c, i) => (
+            <div key={i} className="cultivo-card">
+              <div className="icono">{c.icono || '🌱'}</div>
+              <div className="titulo">{c.nombre}</div>
+              <div className="metricas">
+                <span>Viabilidad: {c.viabilidad ?? 'N/D'}%</span>
+                <span>Rendimiento: {c.rendimiento || 'N/D'}</span>
+                <span>Ciclo: {c.ciclo || 'N/D'}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Indicadores Clave */}
+      <div className="dashboard-section indicators">
+        <div className="indicator-card">
+          <h4>💧 Riego</h4>
+          <p className="big-number">{data.riego?.frecuencia || 'N/D'}</p>
+          <small>{data.riego?.metodo}</small>
+        </div>
+        <div className="indicator-card">
+          <h4>🧪 Fertilización</h4>
+          <p className="big-number">{data.fertilizacion?.tipo || 'N/D'}</p>
+          <small>{data.fertilizacion?.frecuencia}</small>
+        </div>
+        <div className="indicator-card">
+          <h4>☀️ Horas de Sol</h4>
+          <p className="big-number">{data.clima?.horasSol || 0}h</p>
+          <small>Promedio diario</small>
+        </div>
+        <div className="indicator-card">
+          <h4>🌡️ Temperatura</h4>
+          <p className="big-number">{data.clima?.temperaturaMedia || 0}°C</p>
+          <small>Media anual</small>
+        </div>
+      </div>
+
+      {/* Gráfica de Niveles */}
+      <div className="dashboard-section charts">
+        {/* Removed unclear charts */}
+        <div className="chart-card">
+          <h4>Riego semanal</h4>
+          <Bar data={riegoSemanalData} options={{ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }} />
+        </div>
+        <div className="chart-card">
+          <h4>Fertilización semanal</h4>
+          <Bar data={fertSemanalData} options={{ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }} />
+        </div>
+        <div className="chart-card">
+          <h4>Sol semanal</h4>
+          <Bar data={solSemanalData} options={{ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 12 } } }} />
+        </div>
+        <div className="chart-card">
+          <h4>Distribución por zonas</h4>
+          <Bar data={distribucionData} options={{ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }} />
+        </div>
+        {/* Removed plagas doughnut */}
+      </div>
+
+      {/* Plagas y Cosecha */}
+      <div className="dashboard-section plagas">
+        <h3>Plagas comunes</h3>
+        <div className="plagas-grid">
+          {(data.plagas || []).map((p, i) => (
+            <div key={i} className="plaga-card">
+              <div className="plaga-header">🐛 {p.nombre}</div>
+              <div className="plaga-body">
+                <span>Riesgo: {p.riesgo}</span>
+                <span>Control: {p.control}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Distribución de siembra */}
+      <div className="dashboard-section distribucion">
+        <h3>Distribución recomendada de siembra</h3>
+        <div className="distribucion-grid">
+          <div className="dist-card"><strong>Densidad:</strong> {data.distribucion?.densidad || 'N/D'}</div>
+          <div className="dist-card"><strong>Espaciamiento:</strong> {data.distribucion?.espaciamiento || 'N/D'}</div>
+          <div className="dist-card"><strong>Disposición:</strong> {data.distribucion?.disposicion || 'N/D'}</div>
+        </div>
+      </div>
+
+      {/* Cronograma Visual */}
+      <div className="dashboard-section cronograma">
+        <h3>Cronograma</h3>
+        <div className="cronograma-strip">
+          {(data.cronograma || []).map((c, i) => (
+            <div key={i} className={`cronograma-item tipo-${c.tipo}`}>
+              <div className="mes">{c.mes}</div>
+              <div className="actividad">{c.actividad}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -18,6 +174,7 @@ export default function Dashboard() {
   const [dimensions, setDimensions] = useState('')
   const [shape, setShape] = useState('Irregular')
   const [report, setReport] = useState('')
+  const [data, setData] = useState(null)
   const [reportLoading, setReportLoading] = useState(false)
   const [reportError, setReportError] = useState('')
   const [downloading, setDownloading] = useState(false)
@@ -67,6 +224,8 @@ export default function Dashboard() {
       <main className="dashboard">
         <section className="ia-report-section">
           <h2>Reporte de IA</h2>
+          {/* Visual summary when data is available */}
+          {data && <VisualDashboard data={data} />}
           {!report && !reportLoading && (
             <p>Selecciona una ubicación en el mapa y pulsa "Generar Reporte" para obtener recomendaciones personalizadas.</p>
           )}
@@ -122,9 +281,10 @@ export default function Dashboard() {
                   if (!coords) { setReportError('Selecciona una ubicación en el mapa.'); return }
                   try {
                     setReportLoading(true)
-                    const { report: r } = await generateAIReport({ lat: coords.lat, lng: coords.lng })
+                    const { report: r, data: d } = await generateAIReportWithData({ lat: coords.lat, lng: coords.lng })
                     setReportLoading(false)
                     setReport(r)
+                    setData(d || null)
                   } catch (err) {
                     setReportLoading(false)
                     setReportError(err?.response?.data?.message || 'No se pudo generar el reporte')
@@ -149,9 +309,10 @@ export default function Dashboard() {
                     if (!coords) { setReportError('Selecciona una ubicación en el mapa.'); return }
                     try {
                       setReportLoading(true)
-                      const { report: r } = await generateAIReport({ lat: coords.lat, lng: coords.lng, extras: { dimensions, shape } })
+                      const { report: r, data: d } = await generateAIReportWithData({ lat: coords.lat, lng: coords.lng, extras: { dimensions, shape } })
                       setReportLoading(false)
                       setReport(r)
+                      setData(d || null)
                     } catch (err) {
                       setReportLoading(false)
                       setReportError(err?.response?.data?.message || 'No se pudo generar el reporte')

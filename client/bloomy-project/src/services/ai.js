@@ -10,3 +10,8 @@ export async function generateAIReport({ lat, lng, extras }) {
   const res = await api.post('/api/ai/report', { lat, lng, extras })
   return res.data
 }
+
+export async function generateAIReportWithData({ lat, lng, extras }) {
+  const res = await api.post('/api/ai/report-with-data', { lat, lng, extras })
+  return res.data
+}

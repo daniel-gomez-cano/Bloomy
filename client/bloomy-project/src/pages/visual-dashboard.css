@@ -1,0 +1,106 @@
+.visual-dashboard {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  overflow-x: hidden; /* evita scroll horizontal */
+}
+
+.visual-dashboard .dashboard-section {
+  background: #0f172a0d; /* default (dark) subtle card */
+  border: 1px solid #e5e7eb1a;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.visual-dashboard h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+}
+
+/* Cultivos */
+.cultivos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+.cultivo-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: grid;
+  gap: 0.35rem;
+}
+.cultivo-card .icono { font-size: 1.3rem; }
+.cultivo-card .titulo { font-weight: 600; }
+.cultivo-card .metricas { color: #374151; font-size: 0.85rem; display: grid; gap: 2px; }
+
+/* Indicadores */
+.indicators { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
+.indicator-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+.indicator-card .big-number { font-size: 1.1rem; font-weight: 700; margin: 4px 0; }
+
+/* Charts */
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; }
+.chart-card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 0.75rem; }
+.chart-card canvas { max-height: 220px; width: 100% !important; }
+
+/* Plagas */
+.plagas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+.plaga-card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+.plaga-card .plaga-header { background: #fef3c7; padding: 0.5rem 0.75rem; font-weight: 600; }
+.plaga-card .plaga-body { padding: 0.5rem 0.75rem; display: grid; gap: 2px; font-size: 0.9rem; }
+
+/* Distribución */
+.distribucion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; }
+.dist-card { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 0.5rem 0.75rem; }
+
+/* Cronograma */
+.cronograma-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+}
+.cronograma-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+}
+.cronograma-item .mes { font-weight: 700; }
+.cronograma-item .actividad { font-size: 0.9rem; color: #374151; }
+
+.cronograma-item.tipo-preparacion { border-left: 4px solid #6b7280; }
+.cronograma-item.tipo-siembra { border-left: 4px solid #10b981; }
+.cronograma-item.tipo-cosecha { border-left: 4px solid #f59e0b; }
+
+/* Light theme overrides via body.light-theme */
+body.light-theme .visual-dashboard .dashboard-section {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+body.light-theme .cultivo-card,
+body.light-theme .indicator-card,
+body.light-theme .chart-card,
+body.light-theme .plaga-card,
+body.light-theme .dist-card,
+body.light-theme .cronograma-item {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+body.light-theme .visual-dashboard,
+body.light-theme .visual-dashboard * { color: #0f172a; }
+body.light-theme .plaga-card .plaga-header { background: #fff7ed; }
+
+/* Dark theme defaults */
+@media (prefers-color-scheme: dark) {
+  .visual-dashboard .dashboard-section { background: #0b122011; border-color: #243244; }
+  .cultivo-card, .indicator-card, .chart-card, .plaga-card, .dist-card, .cronograma-item { background: #0b1220; border-color: #243244; }
+  .cultivo-card .metricas, .plaga-card .plaga-body, .cronograma-item .actividad { color: #c9d3e0; }
+  .plaga-card .plaga-header { background: #3a2c12; }
+}

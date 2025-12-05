@@ -1,3 +1,4 @@
+
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { verifyToken } from '../services/jwt.js'
 import { User } from '../models/User.js'
@@ -58,6 +59,75 @@ Mejora visual obligatoria del reporte:
   `
 }
 
+// Prompt generator for structured JSON data
+function buildDataPrompt({ isPremium, lat, lng, extras }) {
+  return `
+Eres un asesor agrícola experto. Genera datos estructurados en formato JSON válido para un dashboard agrícola.
+
+Contexto del terreno:
+- Ubicación (lat, lng): ${lat}, ${lng}
+${extras?.dimensions ? `- Dimensiones: ${extras.dimensions}` : ''}
+${extras?.shape ? `- Disposición: ${extras.shape}` : ''}
+
+Genera un objeto JSON con esta estructura exacta (usa valores numéricos cuando aplique y arrays para series temporales semanales):
+{
+  "cultivos": [
+    {
+      "nombre": "Nombre del cultivo",
+      "icono": "🌱",
+      "viabilidad": 85,
+      "rendimiento": "4-6 ton/ha",
+      "ciclo": "90-120 días"
+    }
+  ],
+  "riego": {
+    "frecuencia": "2-3 veces/semana",
+    "metodo": "Goteo",
+    "litrosPorM2": 15,
+    "nivel": 70,
+    "semanalLitrosPorM2": [12, 14, 15, 16]
+  },
+  "fertilizacion": {
+    "tipo": "NPK 10-20-10",
+    "frecuencia": "Cada 15 días",
+    "nivel": 60,
+    "semanalIndice": [40, 60, 50, 70]
+  },
+  "clima": {
+    "horasSol": 6,
+    "temperaturaMedia": 24,
+    "precipitacion": "800-1200mm/año",
+    "nivel": 80,
+    "semanalHorasSol": [5.5, 6.0, 6.5, 6.0]
+  },
+  "plagas": [
+    {"nombre": "Pulgones", "riesgo": "medio", "control": "Aceite de neem"},
+    {"nombre": "Mosca blanca", "riesgo": "bajo", "control": "Trampas amarillas"}
+  ],
+  "plagasResumen": {
+    "conteoPorRiesgo": { "bajo": 1, "medio": 1, "alto": 0 }
+  },
+  "distribucion": {
+    "densidad": "30,000 plantas/ha",
+    "espaciamiento": "0.5m x 0.6m",
+    "disposicion": "Hileras paralelas",
+    "porcentajesZona": [
+      { "zona": "A", "porcentaje": 40 },
+      { "zona": "B", "porcentaje": 35 },
+      { "zona": "C", "porcentaje": 25 }
+    ]
+  },
+  "cronograma": [
+    {"mes": "Enero", "actividad": "Preparación suelo", "tipo": "preparacion"},
+    {"mes": "Febrero", "actividad": "Siembra", "tipo": "siembra"},
+    {"mes": "Mayo", "actividad": "Cosecha", "tipo": "cosecha"}
+  ]
+}
+
+Usa datos realistas para la región. Incluye 3-5 cultivos óptimos. NO agregues comentarios fuera del JSON.
+`
+}
+
 export async function generateReport(req, res) {
   try {
     const token = req.cookies?.[COOKIE_NAME]
@@ -86,6 +156,54 @@ export async function generateReport(req, res) {
     console.error('generateReport error', err)
     const detail = process.env.NODE_ENV === 'production' ? '' : ` (${err?.message || 'error'})`
     return res.status(500).json({ message: `No se pudo generar el reporte${detail}` })
+  }
+}
+
+// Dual endpoint: returns markdown report and structured JSON data
+export async function generateReportWithData(req, res) {
+  try {
+    const token = req.cookies?.[COOKIE_NAME]
+    if (!token) return res.status(401).json({ message: 'No autenticado' })
+    const payload = verifyToken(token)
+    const user = await User.findById(payload.sub)
+    if (!user) return res.status(401).json({ message: 'No autenticado' })
+
+    const { lat, lng, extras } = req.body || {}
+    if (typeof lat !== 'number' || typeof lng !== 'number') {
+      return res.status(400).json({ message: 'Coordenadas inválidas' })
+    }
+
+    const apiKey = process.env.GOOGLE_API_KEY
+    if (!apiKey) return res.status(500).json({ message: 'Falta GOOGLE_API_KEY en el servidor' })
+
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const modelName = process.env.GOOGLE_MODEL || 'gemini-2.5-flash'
+
+    // Data in JSON mode
+    const dataModel = genAI.getGenerativeModel({
+      model: modelName,
+      generationConfig: { responseMimeType: 'application/json' },
+    })
+    const dataPrompt = buildDataPrompt({ isPremium: !!user.isPremium, lat, lng, extras })
+    const dataResult = await dataModel.generateContent(dataPrompt)
+    const dataText = dataResult?.response?.text?.() || '{}'
+    let data = {}
+    try { data = JSON.parse(dataText) } catch (e) {
+      console.error('JSON parse error:', e)
+      data = {}
+    }
+
+    // Markdown report (normal mode)
+    const mdModel = genAI.getGenerativeModel({ model: modelName })
+    const mdPrompt = buildPrompt({ isPremium: !!user.isPremium, lat, lng, extras })
+    const mdResult = await mdModel.generateContent(mdPrompt)
+    const report = mdResult?.response?.text?.() || 'No se pudo generar el reporte.'
+
+    return res.json({ report, data })
+  } catch (err) {
+    console.error('generateReportWithData error', err)
+    const detail = process.env.NODE_ENV === 'production' ? '' : ` (${err?.message || 'error'})`
+    return res.status(500).json({ message: `Error generando reporte${detail}` })
   }
 }
 
