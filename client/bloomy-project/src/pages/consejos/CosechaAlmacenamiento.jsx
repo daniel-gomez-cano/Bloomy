@@ -1,6 +1,20 @@
 import React from 'react'
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
+import { Bar, Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
 export default function CosechaAlmacenamiento() {
+  const perdidasPostCosecha = {
+    labels: ['Selección','Lavado','Secado','Empaque','Transporte','Almacenamiento'],
+    datasets: [{ label: '% pérdida', data: [3,2,1,2,4,5], backgroundColor: '#EF4444' }]
+  }
+
+  const ocupacionCamara = {
+    labels: ['Frutas','Hortalizas','Tubérculos','Hierbas'],
+    datasets: [{ data: [35, 40, 15, 10], backgroundColor: ['#F59E0B','#10B981','#3B82F6','#8B5CF6'] }]
+  }
+
   return (
     <section id="cosecha-almacenamiento" className="content-card">
       <h1>Cosecha y Almacenamiento</h1>
@@ -21,6 +35,9 @@ export default function CosechaAlmacenamiento() {
         <li><strong>Evitar humedad superficial:</strong> No cosechar con rocío abundante para reducir hongos.</li>
         <li><strong>Hora del día:</strong> Mañana fresca o atardecer para minimizar estrés térmico.</li>
       </ul>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Pérdidas en postcosecha</h4><Bar data={perdidasPostCosecha} options={{ scales: { y: { beginAtZero: true, max: 10 } } }} /></div>
+      </div>
 
       <h2 id="cosecha-tecnicas">Técnicas de recolección</h2>
       <p>La manipulación cuidadosa conserva integridad del producto y reduce clasificación posterior.</p>
@@ -45,6 +62,9 @@ export default function CosechaAlmacenamiento() {
         <li><strong>Trazabilidad:</strong> Etiquetar lotes (fecha, parcela) para seguimiento y respuesta rápida ante incidencias.</li>
       </ul>
       <p>La combinación de cosecha cuidadosa y cadena de frío eficiente puede reducir mermas postcosecha de 30% a un nivel inferior al 10%, mejorando rentabilidad y calidad percibida.</p>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Ocupación de cámara (%)</h4><Doughnut data={ocupacionCamara} /></div>
+      </div>
     </section>
   )
 }

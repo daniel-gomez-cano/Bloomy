@@ -1,6 +1,24 @@
 import React from 'react'
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend } from 'chart.js'
+import { Bar, Line, Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend)
 
 export default function TecnicasRiego() {
+  const eficienciaPorMetodo = {
+    labels: ['Goteo','Aspersión','Surcos','Microaspersión'],
+    datasets: [{ label: 'Eficiencia (%)', data: [90, 75, 55, 82], backgroundColor: ['#10B981','#3B82F6','#F59E0B','#8B5CF6'] }]
+  }
+
+  const demandaSemanal = {
+    labels: ['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6'],
+    datasets: [{ label: 'L/m²', data: [12,14,16,13,17,15], borderColor: '#3B82F6', backgroundColor: '#3B82F633', tension: 0.3 }]
+  }
+
+  const distribucionTurnos = {
+    labels: ['Lunes','Miércoles','Viernes','Domingo'],
+    datasets: [{ data: [30, 25, 30, 15], backgroundColor: ['#3B82F6','#10B981','#F59E0B','#EF4444'] }]
+  }
   return (
     <section id="tecnicas-riego" className="content-card">
       <h1>Técnicas de Riego</h1>
@@ -19,6 +37,9 @@ export default function TecnicasRiego() {
         <li><strong>Sanidad:</strong> Menor humedad foliar reduce incidencia de hongos.</li>
         <li><strong>Mantenimiento:</strong> Requiere filtrado y limpieza periódica para evitar obstrucciones.</li>
       </ul>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Eficiencia por método</h4><Bar data={eficienciaPorMetodo} options={{ scales: { y: { beginAtZero: true, max: 100 } } }} /></div>
+      </div>
 
       <h2 id="riego-aspersion">Riego por aspersión</h2>
       <p>Distribuye agua mediante boquillas que simulan lluvia sobre la superficie. Versátil para diferentes cultivos y topografías moderadas.</p>
@@ -28,6 +49,9 @@ export default function TecnicasRiego() {
         <li><strong>Costos:</strong> Inversión media; mantenimiento en boquillas y bombas.</li>
         <li><strong>Riesgo sanitario:</strong> Mayor humedad foliar nocturna puede favorecer mildiu o roya.</li>
       </ul>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Demanda de agua semanal</h4><Line data={demandaSemanal} options={{ scales: { y: { beginAtZero: true } } }} /></div>
+      </div>
 
       <h2 id="riego-eficiente">Manejo eficiente del agua</h2>
       <p>Optimizar el uso del agua protege el recurso y aporta sostenibilidad. Requiere monitoreo continuo y ajustes por clima.</p>
@@ -39,6 +63,9 @@ export default function TecnicasRiego() {
         <li><strong>Prevención de salinidad:</strong> Fraccionar riegos y realizar lavados cuando conductividad aumenta.</li>
         <li><strong>Registro:</strong> Llevar bitácora de láminas aplicadas vs rendimiento final.</li>
       </ul>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Distribución de turnos (%)</h4><Doughnut data={distribucionTurnos} /></div>
+      </div>
     </section>
   )
 }

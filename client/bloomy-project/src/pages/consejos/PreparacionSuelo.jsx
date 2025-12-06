@@ -1,6 +1,24 @@
 import React from 'react'
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend } from 'chart.js'
+import { Bar, Line, Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend)
 
 export default function PreparacionSuelo() {
+  const pHDistribucion = {
+    labels: ['5.5','6.0','6.5','7.0','7.5'],
+    datasets: [{ label: 'Muestras', data: [4,12,18,10,3], backgroundColor: '#8B5CF6' }]
+  }
+
+  const materiaOrganica = {
+    labels: ['Parcela A','Parcela B','Parcela C','Parcela D'],
+    datasets: [{ label: '% MO', data: [2.1, 2.8, 3.5, 2.4], backgroundColor: ['#10B981','#3B82F6','#F59E0B','#EC4899'] }]
+  }
+
+  const humedadSemanal = {
+    labels: ['Sem 1','Sem 2','Sem 3','Sem 4','Sem 5','Sem 6'],
+    datasets: [{ label: '% humedad', data: [45,50,52,48,55,53], borderColor: '#3B82F6', backgroundColor: '#3B82F633', tension: 0.3 }]
+  }
   return (
     <section id="preparacion-suelo" className="content-card">
       <h1>Preparación del Suelo</h1>
@@ -21,6 +39,9 @@ export default function PreparacionSuelo() {
         <li><strong>Textura:</strong> Arena vs limo vs arcilla afecta infiltración y manejo de riego.</li>
       </ul>
       <p>Interpretar correctamente el informe evita fertilizaciones excesivas que encarecen el cultivo y pueden contaminar fuentes de agua. Repetir cada 1–2 años o antes de cambiar la rotación.</p>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Distribución de pH</h4><Bar data={pHDistribucion} options={{ scales: { y: { beginAtZero: true } } }} /></div>
+      </div>
 
       <h2 id="suelo-nutrientes">Mejora de nutrientes</h2>
       <p>Con los resultados del análisis se diseña un plan de mejora equilibrado. La estrategia combina aporte orgánico y correcciones minerales puntuales.</p>
@@ -32,6 +53,9 @@ export default function PreparacionSuelo() {
         <li><strong>Cobertura vegetal:</strong> Abonos verdes (leguminosas) fijan nitrógeno y protegen el suelo de erosión.</li>
       </ul>
       <p>Evita sobre fertilizar: dosis fraccionadas (parceladas) y monitoreo visual de deficiencias (clorosis, necrosis marginal) permiten ajustes finos.</p>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Materia orgánica (%)</h4><Doughnut data={materiaOrganica} /></div>
+      </div>
 
       <h2 id="suelo-drenaje">Drenaje y aireación</h2>
       <p>El exceso de agua reduce el oxígeno disponible, favorece pudriciones y limita absorción de nutrientes. Una buena aireación promueve raíces activas y microorganismos benéficos.</p>
@@ -43,6 +67,10 @@ export default function PreparacionSuelo() {
         <li><strong>Aireación mecánica:</strong> Escarificado superficial rompe costras que impiden la entrada de agua y aire.</li>
       </ul>
       <p>Después de lluvias fuertes revisar zonas bajas y corregir antes de la siguiente siembra. La aireación adecuada reduce enfermedades radiculares y mejora eficiencia del riego.</p>
+      <div className="charts-grid">
+        <div className="chart-card"><h4>Evolución de humedad</h4><Line data={humedadSemanal} options={{ scales: { y: { beginAtZero: true } } }} /></div>
+      </div>
+
     </section>
   )
 }
