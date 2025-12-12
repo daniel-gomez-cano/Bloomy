@@ -8,6 +8,7 @@ import { connectDB } from './config/db.js'
 import authRoutes from './routes/auth.routes.js'
 import stripeRoutes from './routes/stripe.routes.js'
 import aiRoutes from './routes/ai.routes.js'
+import notificationsRoutes from './routes/notifications.routes.js'
 import { stripeWebhookHandler } from './controllers/stripe.controller.js'
 
 const app = express()
@@ -33,6 +34,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes)
 app.use('/api/stripe', stripeRoutes)
 app.use('/api/ai', aiRoutes)
+app.use('/api/notifications', notificationsRoutes)
 
 // Health check
 app.get('/health', (_req, res) => res.json({ ok: true }))

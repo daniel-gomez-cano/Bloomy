@@ -14,3 +14,18 @@ createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </StrictMode>,
 )
+
+// Register Service Worker for Web Push
+async function registerSW() {
+  try {
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.register('/sw.js')
+      return reg
+    }
+  } catch (e) {
+    console.error('SW registration failed', e)
+  }
+  return null
+}
+
+registerSW()

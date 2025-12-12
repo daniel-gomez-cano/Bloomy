@@ -81,7 +81,7 @@
 .field label {
   font-size: 0.85rem;
   margin-bottom: 0.3rem;
-  color: var(--Grey2);
+  color: #ffffff;
 }
 
 .field input, .field select {

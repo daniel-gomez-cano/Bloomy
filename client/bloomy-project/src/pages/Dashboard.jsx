@@ -300,7 +300,7 @@ export default function Dashboard() {
               <div className="input-group">
                 <div className="field">
                   <label htmlFor="dimensions">Dimensiones del terreno (m²)</label>
-                  <input value={dimensions} onChange={(e)=>setDimensions(e.target.value)} type="text" id="dimensions" placeholder="Ej: 20x20 ?" />
+                  <input value={dimensions} onChange={(e)=>setDimensions(e.target.value)} type="text" id="dimensions" placeholder="Ej: 20x20" />
                 </div>
                 <button
                   className="btn-accent"

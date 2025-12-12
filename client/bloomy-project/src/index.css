@@ -285,6 +285,26 @@ body.light-theme .navbar-ia-btn:hover { box-shadow:0 0 0 4px rgba(3,140,131,0.25
 .profile-btn { background: transparent; border: none; cursor: pointer; padding: 0; }
 .profile-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary-accent); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
 .profile-menu { position: absolute; right: 0; top: 64px; background: var(--color-surface); border: 1px solid var(--color-grid-line); padding: 10px; border-radius: 8px; min-width: 200px; z-index: 10070; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+
+/* Responsive push switch */
+.profile-push { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
+.profile-push-label { font-size: 0.95rem; }
+.switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #777; transition: .2s; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .2s; }
+input:checked + .slider { background-color: #10B981; }
+input:focus + .slider { box-shadow: 0 0 1px #10B981; }
+input:checked + .slider:before { transform: translateX(20px); }
+.slider.round { border-radius: 26px; }
+.slider.round:before { border-radius: 50%; }
+@media (max-width: 480px) {
+  .profile-push { gap: 8px; }
+  .profile-push-label { font-size: 0.85rem; }
+  .switch { width: 40px; height: 22px; }
+  .slider:before { height: 16px; width: 16px; left: 3px; bottom: 3px; }
+  input:checked + .slider:before { transform: translateX(18px); }
+}
 .profile-name { color: var(--color-text-primary); font-weight: 600; margin-bottom: 4px; }
 .profile-status { color: var(--color-primary-accent); font-size: 0.9rem; margin-bottom: 8px; }
 .logout-btn { width: 100%; background: transparent; color: var(--color-primary-accent); border: 1px solid var(--color-primary-accent); padding: 8px; border-radius: 6px; cursor: pointer; }
