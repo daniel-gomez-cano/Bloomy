@@ -20,8 +20,6 @@ const Navbar = () => {
   const [pwError, setPwError] = useState('')
   const [pwOk, setPwOk] = useState('')
   const [pwLoading, setPwLoading] = useState(false)
-  const [pushEnabled, setPushEnabled] = useState(false)
-  const [pushEndpoint, setPushEndpoint] = useState('')
 
   const isDashboard = location.pathname.startsWith('/dashboard')
   const isHome = location.pathname === '/' || location.pathname === ''
@@ -72,57 +70,6 @@ const Navbar = () => {
     }
   }
 
-  async function ensureSW() {
-    if ('serviceWorker' in navigator) {
-      return await navigator.serviceWorker.ready
-    }
-    return null
-  }
-
-  async function enablePush() {
-    try {
-      const reg = await ensureSW()
-      if (!reg) throw new Error('SW no disponible')
-      const { getVapidPublicKey, subscribePush, notifyUser } = await import('../services/push')
-      const publicKey = await getVapidPublicKey()
-      if (!publicKey) throw new Error('VAPID key no disponible')
-      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(publicKey) })
-      setPushEndpoint(sub.endpoint)
-      await subscribePush(sub)
-      setPushEnabled(true)
-      // Fire confirmation notification from server already, but also provide local feedback
-      try { await notifyUser({ title: '🔔 Notificaciones activadas', body: 'Recibirás alertas de Bloomy', url: '/dashboard' }) } catch {}
-    } catch (e) {
-      console.error('Enable push failed', e)
-    }
-  }
-
-  async function disablePush() {
-    try {
-      const reg = await ensureSW()
-      if (!reg) return
-      const sub = await reg.pushManager.getSubscription()
-      if (sub) {
-        const { unsubscribePush } = await import('../services/push')
-        await unsubscribePush(sub.endpoint)
-        await sub.unsubscribe()
-      }
-      setPushEnabled(false)
-      setPushEndpoint('')
-    } catch (e) {
-      console.error('Disable push failed', e)
-    }
-  }
-
-  function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
-    const rawData = window.atob(base64)
-    const outputArray = new Uint8Array(rawData.length)
-    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i)
-    return outputArray
-  }
-
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -161,7 +108,7 @@ const Navbar = () => {
             {isDashboard && isPremium && !isConsejos && (
               <button
                 className="navbar-link"
-                onClick={() => navigate('/consejos')}
+                onClick={() => { navigate('/consejos') }}
               >
                 Consejos
               </button>
@@ -212,33 +159,6 @@ const Navbar = () => {
                 <div className="profile-menu" role="menu">
                   <div className="profile-name">{user?.nombre || user?.correo}</div>
                   <div className="profile-status">{user?.isPremium ? 'Premium' : 'No Premium'}</div>
-                  <div className="profile-push">
-                    <div className="profile-push-label">Habilitar notificaciones</div>
-                    <label className="switch">
-                      <input type="checkbox" checked={pushEnabled} onChange={async (e) => {
-                        if (e.target.checked) {
-                          await enablePush()
-                        } else {
-                          await disablePush()
-                        }
-                      }} />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
-                  <button
-                    className="logout-btn"
-                    style={{ marginBottom: 8 }}
-                    onClick={async () => {
-                      try {
-                        const { notifyUser } = await import('../services/push')
-                        await notifyUser({ title: '🔔 Notificación de prueba', body: 'Este es un mensaje de prueba de Bloomy.', url: '/dashboard' })
-                      } catch (e) {
-                        console.error('Test push failed', e)
-                      }
-                    }}
-                  >
-                    Enviar notificación de prueba
-                  </button>
                   {!user?.isPremium && isDashboard && (
                     <button
                       className="logout-btn"
@@ -319,15 +239,6 @@ const Navbar = () => {
                   </a>
                 )}
 
-                {isHome && (
-                  <button
-                    className="navbar-cta"
-                    onClick={() => { setMobileOpen(false); navigate('/dashboard') }}
-                  >
-                    Entrar
-                  </button>
-                )}
-
                 {/* En /consejos en mobile, incluir 'Dashboard' para volver */}
                 {(isConsejos || isChat) && (
                   <button
@@ -355,10 +266,6 @@ const Navbar = () => {
                     <span className="ia-icon" aria-hidden="true">✦</span> Bloomy IA
                   </button>
                 )}
-                {/* Theme toggle in mobile */}
-                <div style={{ padding: '8px 0' }}>
-                  <ThemeToggle />
-                </div>
                 {isChat && (
                   <button
                     className="navbar-link"

@@ -104,6 +104,29 @@ body {
   color: #ffffff;
 }
 
+/* Botón Entrar sólo para móviles, debajo del CTA */
+.mobile-entrar {
+  display: none;
+  background-color: transparent;
+  border: 2px solid var(--color-primary-accent);
+  color: var(--color-primary-accent);
+  padding: 10px 30px;
+  border-radius: 8px;
+  font-family: var(--font-noto);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+.mobile-entrar:hover {
+  background-color: #038C83;
+  color: #ffffff;
+}
+@media (max-width: 768px) {
+  .mobile-entrar { display: inline-flex; }
+}
+
 /* Navbar Styles */
 .navbar {
   position: sticky; /* keep navbar fixed to top */

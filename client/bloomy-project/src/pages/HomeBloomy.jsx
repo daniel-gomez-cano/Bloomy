@@ -22,6 +22,8 @@ export default function HomeBloomy() {
             condiciones ambientales.
           </p>
           <button className="cta-button" onClick={() => navigate('/register')}>Crea tu Cuenta</button>
+          {/* Botón Entrar solo visible en teléfonos */}
+          <button className="mobile-entrar" onClick={() => navigate('/dashboard')}>Entrar</button>
         </div>
       </div>
 
